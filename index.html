@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- IMPORTANT: This meta tag locks the zoom and prevents pinch-zoom. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <title>Hand Cricket V2</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
 
@@ -18,7 +21,8 @@
       background: #000;
       font-family: 'Orbitron', sans-serif;
       color: #0ff;
-      overflow: hidden; /* We'll show pages one at a time */
+      /* We keep overflow hidden so each "page" is displayed in a centered block */
+      overflow: hidden;
     }
     /* 
       SCANNING-LINE BACKGROUND
@@ -27,8 +31,10 @@
     body::before {
       content: "";
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0; 
+      left: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
       background: repeating-linear-gradient(
         to bottom,
@@ -53,7 +59,8 @@
     h1.glitch::after {
       content: attr(data-text);
       position: absolute;
-      left: 0; top: 0;
+      left: 0; 
+      top: 0;
       width: 100%;
       overflow: hidden;
       color: #0ff;
@@ -71,7 +78,6 @@
       clip: rect(85px, 450px, 140px, 0);
       animation: glitch-anim2 2s infinite linear alternate-reverse;
     }
-
     @keyframes glitch-anim {
       0%   { clip: rect(42px, 9999px, 44px, 0); }
       20%  { clip: rect(12px, 9999px, 18px, 0); }
@@ -91,7 +97,7 @@
 
     /* 
       PAGE LAYOUT 
-      - multiple pages, only one is active
+      - We'll have multiple pages, only one is active
       - center them below the heading
     */
     .page {
@@ -284,7 +290,6 @@
   <!-- INTRO PAGE: Ask Player's Name -->
   <div id="introPage" class="page active">
     <div class="container">
-      <!-- Removed "future of cricket," replaced with a simple subheading -->
       <h2 class="flicker">Hand Cricket</h2>
       <p>Please enter your name:</p>
       <input type="text" id="playerNameInput" placeholder="Your Name">
@@ -692,4 +697,4 @@
     }
   </script>
 </body>
-</html>
+  </html>
