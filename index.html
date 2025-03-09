@@ -2,39 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- IMPORTANT: This meta tag locks the zoom and prevents pinch-zoom. -->
+  <!-- Lock zoom & disable pinch-zoom; force portrait -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
   <title>Hand Cricket V2</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
-
   <style>
-    /* 
-      GLOBAL NEON FUTURISTIC STYLING 
-    */
-    * {
-      box-sizing: border-box;
-    }
+    /* GLOBAL NEON FUTURISTIC STYLING */
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       padding: 0;
       background: #000;
       font-family: 'Orbitron', sans-serif;
       color: #0ff;
-      /* We keep overflow hidden so each "page" is displayed in a centered block */
       overflow: hidden;
     }
-    /* 
-      SCANNING-LINE BACKGROUND
-      Adds a subtle futuristic vibe behind everything 
-    */
+    /* Prevent rotation on mobile (best in PWA/fullscreen) */
+    @media screen and (orientation: landscape) {
+      body { transform: rotate(90deg); }
+    }
+    /* Scanning-line background */
     body::before {
       content: "";
       position: fixed;
-      top: 0; 
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       pointer-events: none;
       background: repeating-linear-gradient(
         to bottom,
@@ -44,11 +36,34 @@
         transparent 4px
       );
     }
-
-    /* 
-      GLITCH HEADING 
-      We'll display the main title with a glitch effect
-    */
+    /* Modal Popup for Rules with Animation */
+    #rulesPopup {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+    #rulesPopup .popup-container {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #0ff;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 20px #0ff;
+      animation: popupIn 1s ease-out;
+    }
+    @keyframes popupIn {
+      0% { opacity: 0; transform: scale(0.7) rotate(10deg); filter: blur(4px); }
+      50% { opacity: 0.5; transform: scale(1.05) rotate(-2deg); filter: blur(2px); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); filter: blur(0); }
+    }
+    /* Glitch Heading */
     h1.glitch {
       position: relative;
       font-size: 2.8em;
@@ -59,13 +74,11 @@
     h1.glitch::after {
       content: attr(data-text);
       position: absolute;
-      left: 0; 
-      top: 0;
+      left: 0; top: 0;
       width: 100%;
       overflow: hidden;
       color: #0ff;
     }
-    /* Red/blue offsets to create glitch illusions */
     h1.glitch::before {
       left: 2px;
       text-shadow: -2px 0 #f00;
@@ -94,15 +107,10 @@
       80%  { clip: rect(72px, 9999px, 86px, 0); }
       100% { clip: rect(52px, 9999px, 90px, 0); }
     }
-
-    /* 
-      PAGE LAYOUT 
-      - We'll have multiple pages, only one is active
-      - center them below the heading
-    */
+    /* PAGE LAYOUT – center pages below the heading */
     .page {
       position: absolute;
-      top: 100px; /* So it doesn't overlap with the glitch heading */
+      top: 100px;
       left: 0;
       width: 100%;
       height: calc(100vh - 100px);
@@ -117,27 +125,11 @@
       animation: neonFade 0.8s ease-out forwards;
     }
     @keyframes neonFade {
-      0% {
-        opacity: 0;
-        transform: scale(0.9) rotateX(10deg);
-        filter: blur(5px);
-      }
-      50% {
-        opacity: 0.5;
-        transform: scale(1.02) rotateX(-5deg);
-        filter: blur(2px);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1) rotateX(0deg);
-        filter: blur(0);
-      }
+      0% { opacity: 0; transform: scale(0.9) rotateX(10deg); filter: blur(5px); }
+      50% { opacity: 0.5; transform: scale(1.02) rotateX(-5deg); filter: blur(2px); }
+      100% { opacity: 1; transform: scale(1) rotateX(0deg); filter: blur(0); }
     }
-
-    /* 
-      CONTAINER 
-      - center aligned, no extra margin
-    */
+    /* Container styling */
     .container {
       width: 90%;
       max-width: 500px;
@@ -147,28 +139,16 @@
       padding: 20px;
       text-align: center;
       box-shadow: 0 0 20px #0ff;
-      margin: 0; 
+      margin: 0;
     }
-
     /* Flicker effect for sub-headings */
-    .flicker {
-      animation: flicker 3s infinite;
-    }
+    .flicker { animation: flicker 3s infinite; }
     @keyframes flicker {
-      0%, 18%, 22%, 25%, 53%, 57%, 100% {
-        opacity: 1;
-      }
-      20%, 24%, 55% {
-        opacity: 0.4;
-      }
-      90% {
-        opacity: 0.7;
-      }
+      0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
+      20%, 24%, 55% { opacity: 0.4; }
+      90% { opacity: 0.7; }
     }
-
-    /* 
-      NEON INPUT 
-    */
+    /* Neon Input */
     input[type="text"] {
       background: transparent;
       border: 2px solid #0ff;
@@ -183,17 +163,16 @@
       margin-top: 10px;
       transition: all 0.3s ease;
     }
-    input[type="text"]::placeholder {
-      color: rgba(0,255,255,0.5);
+    input[type="text"]::placeholder { color: rgba(0,255,255,0.5); }
+    input[type="text"]:focus { box-shadow: 0 0 10px #0ff, 0 0 20px #0ff; }
+    /* Mode Buttons (Easy / Hard) */
+    .mode-buttons { margin: 10px 0; }
+    .mode-buttons button {
+      margin: 5px;
+      padding: 8px 16px;
+      font-size: 0.9em;
     }
-    input[type="text"]:focus {
-      box-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
-    }
-
-    /* 
-      NEON BUTTONS 
-      - Sliding glow effect 
-    */
+    /* Neon Buttons with sliding glow */
     button {
       position: relative;
       display: inline-block;
@@ -219,16 +198,9 @@
       transition: 0.5s;
       z-index: -1;
     }
-    button:hover {
-      color: #000;
-    }
-    button:hover::before {
-      left: 0;
-    }
-
-    /* 
-      RUN BUTTONS GRID 
-    */
+    button:hover { color: #000; }
+    button:hover::before { left: 0; }
+    /* Run Buttons Grid */
     .run-buttons {
       display: flex;
       flex-wrap: wrap;
@@ -236,38 +208,20 @@
       gap: 10px;
       margin: 20px 0;
     }
-    .run-buttons button {
-      width: 60px;
-      font-size: 1.1em;
+    .run-buttons button { width: 60px; font-size: 1.1em; }
+    /* Score Display */
+    .score-display { font-size: 1.2em; margin: 10px 0; }
+    /* Milestone Page Animation */
+    .milestone-title {
+      font-size: 2em;
+      animation: pulseGlow 2s infinite alternate;
+      margin-bottom: 20px;
     }
-
-    /* 
-      SCORE DISPLAY 
-    */
-    .score-display {
-      font-size: 1.2em;
-      margin: 10px 0;
-    }
-
-    /* 
-      INNINGS OVER PAGE 
-      - Flickering title 
-    */
-    .innings-over-title {
-      animation: flicker 2s infinite;
-    }
-
-    /* 
-      FINAL RESULT PAGE 
-      - If user wins, show confetti 
-    */
-    .win-animation {
-      animation: winGlow 2s infinite alternate;
-    }
-    @keyframes winGlow {
+    @keyframes pulseGlow {
       from { text-shadow: 0 0 10px #ff0, 0 0 20px #ff0; }
-      to   { text-shadow: 0 0 25px #ff0, 0 0 40px #ff0; }
+      to   { text-shadow: 0 0 30px #ff0, 0 0 40px #ff0; }
     }
+    /* Confetti Effect for win page */
     .confetti {
       position: absolute;
       top: 0; left: 0;
@@ -277,23 +231,63 @@
       animation: confetti 3s linear infinite;
       opacity: 0.3;
     }
-    @keyframes confetti {
-      0%   { transform: translateY(-100%); }
-      100% { transform: translateY(100%); }
+    @keyframes confetti { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
+    /* Responsive adjustments for laptops */
+    @media (min-width: 1024px) {
+      .container { max-width: 700px; padding: 30px; }
+      h1.glitch { font-size: 3.5em; }
+      .flicker { font-size: 2em; }
+      input[type="text"] { font-size: 1.2em; }
+      button { font-size: 1.1em; padding: 12px 24px; }
     }
   </style>
+  <script>
+    // Attempt to lock screen orientation to portrait (best in fullscreen/PWA)
+    window.addEventListener("load", function() {
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock("portrait").catch(err => console.log(err));
+      }
+    });
+    // Show rules popup on initial load
+    window.addEventListener("load", function() {
+      document.getElementById("rulesPopup").style.display = "flex";
+    });
+    function closeRulesPopup() {
+      document.getElementById("rulesPopup").style.display = "none";
+    }
+  </script>
 </head>
 <body>
-  <!-- UPDATED GLITCH TITLE -->
+  <!-- Modal Popup for Rules with Animation -->
+  <div id="rulesPopup">
+    <div class="popup-container">
+      <h2 class="flicker">Game Rules</h2>
+      <p>Please follow these rules:</p>
+      <ul style="text-align: left; margin: 10px auto; max-width: 300px;">
+        <li>No spamming the buttons.</li>
+        <li>Keep it fair and fun.</li>
+        <li>Enjoy the game!</li>
+      </ul>
+      <p><strong>Enjoy!</strong></p>
+      <button onclick="closeRulesPopup()">Play Hand Cricket</button>
+    </div>
+  </div>
+
+  <!-- Glitch Title -->
   <h1 class="glitch" data-text="Hand Cricket V2">Hand Cricket V2</h1>
 
-  <!-- INTRO PAGE: Ask Player's Name -->
+  <!-- INTRO PAGE: Username & Mode Selection -->
   <div id="introPage" class="page active">
     <div class="container">
       <h2 class="flicker">Hand Cricket</h2>
-      <p>Please enter your name:</p>
-      <input type="text" id="playerNameInput" placeholder="Your Name">
-      <br><br>
+      <p>Please enter your name (max 14 characters):</p>
+      <input type="text" id="playerNameInput" placeholder="Your Name" maxlength="14">
+      <div class="mode-buttons">
+        <p>Select Mode:</p>
+        <button id="easyBtn" onclick="setDifficulty('easy')">Easy</button>
+        <button id="hardBtn" onclick="setDifficulty('hard')">Hard</button>
+      </div>
+      <br>
       <button onclick="startGame()">Start Game</button>
     </div>
   </div>
@@ -310,7 +304,7 @@
     </div>
   </div>
 
-  <!-- CHOOSE BAT/BOWL PAGE (if user wins toss) -->
+  <!-- CHOOSE BAT/BOWL PAGE -->
   <div id="chooseBatBowlPage" class="page">
     <div class="container">
       <h2 class="flicker">You won the toss!</h2>
@@ -324,10 +318,7 @@
   <div id="battingPage" class="page">
     <div class="container">
       <h2 class="flicker" id="battingTitle"></h2>
-      <p class="score-display">
-        <span id="playerNameScore">Player's Score:</span>
-        <span id="playerScoreDisplay">0</span>
-      </p>
+      <p class="score-display"><span id="playerNameScore">Player's Score:</span> <span id="playerScoreDisplay">0</span></p>
       <p id="battingStatus">Select a run (1–10):</p>
       <div class="run-buttons" id="battingButtons"></div>
     </div>
@@ -337,18 +328,25 @@
   <div id="bowlingPage" class="page">
     <div class="container">
       <h2 class="flicker" id="bowlingTitle"></h2>
-      <p class="score-display">
-        AI Score: <span id="computerScoreDisplay">0</span>
-      </p>
+      <p class="score-display">AI Score: <span id="computerScoreDisplay">0</span></p>
       <p id="bowlingStatus">Select a run (1–10):</p>
       <div class="run-buttons" id="bowlingButtons"></div>
+    </div>
+  </div>
+
+  <!-- MILESTONE PAGE -->
+  <div id="milestonePage" class="page">
+    <div class="container">
+      <h2 class="milestone-title" id="milestoneTitle"></h2>
+      <p id="milestoneMessage">Milestone reached!</p>
+      <!-- Auto-resumes after 3 seconds -->
     </div>
   </div>
 
   <!-- INNINGS OVER PAGE -->
   <div id="inningsOverPage" class="page">
     <div class="container">
-      <h2 class="innings-over-title">Innings Over!</h2>
+      <h2 class="flicker innings-over-title">Innings Over!</h2>
       <p id="inningsOverMessage"></p>
       <button onclick="startNextInnings()">Next Innings</button>
     </div>
@@ -361,39 +359,79 @@
       <p id="resultMessage"></p>
       <button onclick="restartGame()">Play Again</button>
     </div>
-    <!-- Confetti effect for a win -->
     <div class="confetti" id="confettiEffect" style="display:none;"></div>
   </div>
 
   <script>
-    /*
-      GLOBAL VARIABLES
-    */
-    let playerName       = "";
-    let playerScore      = 0;
-    let computerScore    = 0;
-    let innings          = 1;   // 1 for first innings, 2 for second
-    let target           = 0;   // Score to chase in second innings
-    let gameMode         = "";  // "userBatFirst" or "userBowlFirst"
-    let currentBatting   = "";  // "user" or "computer" during the innings
-
-    const tossChoices    = ["heads", "tails"];
+    // GLOBAL VARIABLES
+    let playerName = "";
+    let difficulty = "easy"; // default mode is easy
+    let playerScore = 0;
+    let computerScore = 0;
+    let innings = 1; // 1 for first innings, 2 for second
+    let target = 0;  // Score to chase in second innings
+    let gameMode = ""; // "userBatFirst" or "userBowlFirst"
+    let currentBatting = ""; // "user" or "computer"
+    const tossChoices = ["heads", "tails"];
     const batBowlChoices = ["bat", "bowl"];
-    const runChoices     = [1,2,3,4,5,6,7,8,9,10];
-
-    /*
-      PAGE NAVIGATION UTILS
-    */
+    const runChoices = [1,2,3,4,5,6,7,8,9,10];
+    // Milestone thresholds
+    let userNextMilestone = 50;
+    let aiNextMilestone = 50;
+    // For preventing spam clicks (0.25 s)
+    let canClick = true;
+    // For smart AI in hard mode: record user's moves
+    let userMoveHistory = [];
+    // Prevent multiple toss selections
+    let tossDecided = false;
+    
+    // Set difficulty and update button styles
+    function setDifficulty(mode) {
+      difficulty = mode;
+      document.getElementById("easyBtn").style.background = (mode === "easy") ? "#0ff" : "transparent";
+      document.getElementById("easyBtn").style.color = (mode === "easy") ? "#000" : "#0ff";
+      document.getElementById("hardBtn").style.background = (mode === "hard") ? "#0ff" : "transparent";
+      document.getElementById("hardBtn").style.color = (mode === "hard") ? "#000" : "#0ff";
+    }
+    
+    // Smart AI for hard mode: when user is batting (AI bowling)
+    function getSmartAIMove() {
+      if (userMoveHistory.length === 0) return randomRun();
+      let freq = {};
+      userMoveHistory.forEach(m => { freq[m] = (freq[m] || 0) + 1; });
+      let predicted = Object.keys(freq).reduce((a, b) => freq[a] > freq[b] ? a : b);
+      predicted = parseInt(predicted);
+      return (Math.random() < 0.8) ? predicted : randomRun();
+    }
+    // Smart AI for hard mode: when user is bowling (AI batting)
+    function getSmartAIMoveWhenBatting() {
+      if (userMoveHistory.length === 0) return randomRun();
+      let freq = {};
+      userMoveHistory.forEach(m => { freq[m] = (freq[m] || 0) + 1; });
+      let predicted = Object.keys(freq).reduce((a, b) => freq[a] > freq[b] ? a : b);
+      predicted = parseInt(predicted);
+      let choices = runChoices.filter(x => x !== predicted);
+      return (Math.random() < 0.8 && choices.length > 0) ? choices[Math.floor(Math.random() * choices.length)] : randomRun();
+    }
+    
+    // Helper: Get random run (1-10)
+    function randomRun() {
+      return runChoices[Math.floor(Math.random() * runChoices.length)];
+    }
+    
+    // Prevent spam clicks: disable for 0.25 s
+    function disableClickTemporarily() {
+      canClick = false;
+      setTimeout(() => { canClick = true; }, 250);
+    }
+    
+    // PAGE NAVIGATION UTILS
     function showPage(pageId) {
-      document.querySelectorAll('.page').forEach(page => {
-        page.classList.remove('active');
-      });
+      document.querySelectorAll('.page').forEach(page => { page.classList.remove('active'); });
       document.getElementById(pageId).classList.add('active');
     }
-
-    /*
-      RESTART GAME ENTIRELY
-    */
+    
+    // RESTART GAME
     function restartGame() {
       playerScore = 0;
       computerScore = 0;
@@ -401,6 +439,10 @@
       target = 0;
       gameMode = "";
       currentBatting = "";
+      userNextMilestone = 50;
+      aiNextMilestone = 50;
+      userMoveHistory = [];
+      tossDecided = false; // Reset toss state
       document.getElementById("playerScoreDisplay").textContent = "0";
       document.getElementById("computerScoreDisplay").textContent = "0";
       document.getElementById("tossMessage").textContent = "";
@@ -408,111 +450,68 @@
       document.getElementById("confettiEffect").style.display = "none";
       showPage("introPage");
     }
-
-    /*
-      1) INTRO PAGE: Player enters name
-    */
+    
+    // 1) INTRO PAGE
     function startGame() {
       const nameInput = document.getElementById("playerNameInput");
-      if (nameInput.value.trim() === "") {
-        alert("Please enter your name!");
-        return;
-      }
+      if (nameInput.value.trim() === "") { alert("Please enter your name!"); return; }
       playerName = nameInput.value.trim();
-      // Insert player's name in scoreboard labels
       document.getElementById("playerNameScore").textContent = `${playerName}'s Score:`;
       showPage("tossPage");
     }
-
-    /*
-      2) TOSS PAGE
-    */
+    
+    // 2) TOSS PAGE
     function selectToss(userChoice) {
+      if (tossDecided) return; // Prevent multiple clicks
+      tossDecided = true;
       const correctToss = tossChoices[Math.floor(Math.random() * tossChoices.length)];
       if (userChoice === correctToss) {
-        document.getElementById("tossMessage").textContent = 
-          `Congrats, ${playerName}! You won the toss.`;
-        // Show continue button to go to bat/bowl choice
+        document.getElementById("tossMessage").textContent = `Congrats, ${playerName}! You won the toss.`;
         document.getElementById("tossContinueBtn").style.display = "inline-block";
       } else {
-        // User lost the toss
         const aiChoice = batBowlChoices[Math.floor(Math.random() * batBowlChoices.length)];
-        document.getElementById("tossMessage").textContent = 
-          `Oops, ${playerName}! You lost the toss. The AI chose to ${aiChoice} first.`;
+        document.getElementById("tossMessage").textContent = `Oops, ${playerName}! You lost the toss. The AI chose to ${aiChoice} first.`;
         document.getElementById("tossContinueBtn").style.display = "inline-block";
-        // Determine game mode based on AI choice
-        if (aiChoice === "bowl") {
-          gameMode = "userBatFirst";
-          currentBatting = "user";
-        } else {
-          gameMode = "userBowlFirst";
-          currentBatting = "computer";
-        }
+        if (aiChoice === "bowl") { gameMode = "userBatFirst"; currentBatting = "user"; }
+        else { gameMode = "userBowlFirst"; currentBatting = "computer"; }
       }
     }
-
-    // Called after toss message
+    
     function proceedAfterToss() {
       if (document.getElementById("tossMessage").textContent.includes("won the toss")) {
-        // Go choose bat or bowl
         showPage("chooseBatBowlPage");
       } else {
-        // AI decided already
-        if (gameMode === "userBatFirst") {
-          showBattingPage();
-        } else {
-          showBowlingPage();
-        }
+        if (gameMode === "userBatFirst") { showBattingPage(); } else { showBowlingPage(); }
       }
     }
-
-    /*
-      3) CHOOSE BAT/BOWL PAGE (if user wins toss)
-    */
+    
+    // 3) CHOOSE BAT/BOWL PAGE
     function selectBatBowl(choice) {
-      if (choice === "bat") {
-        gameMode = "userBatFirst";
-        currentBatting = "user";
-        showBattingPage();
-      } else {
-        gameMode = "userBowlFirst";
-        currentBatting = "computer";
-        showBowlingPage();
-      }
+      if (choice === "bat") { gameMode = "userBatFirst"; currentBatting = "user"; showBattingPage(); }
+      else { gameMode = "userBowlFirst"; currentBatting = "computer"; showBowlingPage(); }
     }
-
-    /*
-      BATTING PAGE
-    */
+    
+    // BATTING PAGE
     function showBattingPage() {
-      // Update title
-      document.getElementById("battingTitle").textContent = 
+      document.getElementById("battingTitle").textContent =
         (innings === 1) ? `${playerName}, you're Batting First!` : `${playerName}, chase the target!`;
       document.getElementById("playerScoreDisplay").textContent = playerScore;
-      // Clear status
       document.getElementById("battingStatus").textContent = "Select a run (1–10):";
-      // Generate run buttons
       generateRunButtons("battingButtons", handleBatting);
       showPage("battingPage");
     }
-
-    /*
-      BOWLING PAGE
-    */
+    
+    // BOWLING PAGE
     function showBowlingPage() {
-      // Update title
-      document.getElementById("bowlingTitle").textContent = 
+      document.getElementById("bowlingTitle").textContent =
         (innings === 1) ? `${playerName}, you're Bowling First!` : `${playerName}, defend the target!`;
       document.getElementById("computerScoreDisplay").textContent = computerScore;
       document.getElementById("bowlingStatus").textContent = "Select a run (1–10):";
-      // Generate run buttons
       generateRunButtons("bowlingButtons", handleBowling);
       showPage("bowlingPage");
     }
-
-    /*
-      Generate run buttons (1–10) in the given container
-    */
+    
+    // Generate run buttons
     function generateRunButtons(containerId, callback) {
       const container = document.getElementById(containerId);
       container.innerHTML = "";
@@ -523,81 +522,109 @@
         container.appendChild(btn);
       });
     }
-
-    /*
-      BATTING HANDLER
-    */
+    
+    // BATTING HANDLER (User batting; AI bowling)
     function handleBatting(userRun) {
-      const compRun = randomRun();
-      document.getElementById("battingStatus").textContent = 
+      if (!canClick) return;
+      disableClickTemporarily();
+      let compRun;
+      if (difficulty === "hard") {
+        userMoveHistory.push(userRun);
+        compRun = getSmartAIMove();
+      } else {
+        compRun = randomRun();
+      }
+      document.getElementById("battingStatus").textContent =
         `${playerName} chose ${userRun}, AI shows ${compRun}.`;
       if (userRun === compRun) {
-        // Out
         setTimeout(() => { endInnings("batting"); }, 500);
       } else {
         playerScore += userRun;
         document.getElementById("playerScoreDisplay").textContent = playerScore;
-        // If second innings and user surpasses target
         if (innings === 2 && playerScore > target) {
-          // User wins immediately
           setTimeout(() => { showResult("win"); }, 500);
+          return;
+        }
+        if (playerScore >= userNextMilestone) {
+          userNextMilestone += 50;
+          showMilestonePage(true, playerScore);
+          return;
         }
       }
     }
-
-    /*
-      BOWLING HANDLER
-    */
+    
+    // BOWLING HANDLER (User bowling; AI batting)
     function handleBowling(userRun) {
-      const compRun = randomRun();
-      document.getElementById("bowlingStatus").textContent = 
+      if (!canClick) return;
+      disableClickTemporarily();
+      let compRun;
+      if (difficulty === "hard") {
+        compRun = getSmartAIMoveWhenBatting();
+      } else {
+        compRun = randomRun();
+      }
+      document.getElementById("bowlingStatus").textContent =
         `${playerName} chose ${userRun}, AI shows ${compRun}.`;
       if (userRun === compRun) {
-        // AI Out
         setTimeout(() => { endInnings("bowling"); }, 500);
       } else {
         computerScore += compRun;
         document.getElementById("computerScoreDisplay").textContent = computerScore;
-        // If second innings and AI surpasses target
         if (innings === 2 && computerScore > target) {
           setTimeout(() => { showResult("loss"); }, 500);
+          return;
+        }
+        if (computerScore >= aiNextMilestone) {
+          aiNextMilestone += 50;
+          showMilestonePage(false, computerScore);
+          return;
         }
       }
     }
-
-    /*
-      END OF INNINGS
-    */
+    
+    // Smart AI for hard mode: when user is batting (AI bowling)
+    function getSmartAIMove() {
+      if (userMoveHistory.length === 0) return randomRun();
+      let freq = {};
+      userMoveHistory.forEach(m => { freq[m] = (freq[m] || 0) + 1; });
+      let predicted = Object.keys(freq).reduce((a, b) => freq[a] > freq[b] ? a : b);
+      predicted = parseInt(predicted);
+      return (Math.random() < 0.8) ? predicted : randomRun();
+    }
+    // Smart AI for hard mode: when user is bowling (AI batting)
+    function getSmartAIMoveWhenBatting() {
+      if (userMoveHistory.length === 0) return randomRun();
+      let freq = {};
+      userMoveHistory.forEach(m => { freq[m] = (freq[m] || 0) + 1; });
+      let predicted = Object.keys(freq).reduce((a, b) => freq[a] > freq[b] ? a : b);
+      predicted = parseInt(predicted);
+      let choices = runChoices.filter(x => x !== predicted);
+      return (Math.random() < 0.8 && choices.length > 0) ? choices[Math.floor(Math.random() * choices.length)] : randomRun();
+    }
+    
+    // Milestone Page
+    function showMilestonePage(isPlayer, score) {
+      const milestoneTitle = document.getElementById("milestoneTitle");
+      milestoneTitle.textContent = isPlayer ? `Congrats, ${playerName}!` : "Milestone Achieved by AI!";
+      document.getElementById("milestoneMessage").textContent = `Score reached: ${score}`;
+      showPage("milestonePage");
+      setTimeout(() => {
+        if (currentBatting === "user") { showBattingPage(); } else { showBowlingPage(); }
+      }, 3000);
+    }
+    
+    // END OF INNINGS
     function endInnings(context) {
       if (innings === 1) {
-        // First innings over
-        if (context === "batting") {
-          target = playerScore;
-        } else {
-          target = computerScore;
-        }
+        target = (context === "batting") ? playerScore : computerScore;
         showInningsOverPage();
       } else {
-        // Second innings over => decide outcome
-        if (currentBatting === "user") {
-          if (playerScore > target) {
-            showResult("win");
-          } else {
-            showResult("loss");
-          }
-        } else {
-          if (computerScore > target) {
-            showResult("loss");
-          } else {
-            showResult("win");
-          }
-        }
+        if (currentBatting === "user") { (playerScore > target) ? showResult("win") : showResult("loss"); }
+        else { (computerScore > target) ? showResult("loss") : showResult("win"); }
       }
     }
-
-    /*
-      INNINGS OVER PAGE
-    */
+    
+    // INNINGS OVER PAGE
     function showInningsOverPage() {
       const msg = (gameMode === "userBatFirst" && currentBatting === "user")
         ? `${playerName}, you got out on ${playerScore}.`
@@ -606,95 +633,54 @@
         : (gameMode === "userBatFirst" && currentBatting === "computer")
         ? `AI finished batting with ${computerScore}.`
         : `You finished batting with ${playerScore}.`;
-
       const needed = (currentBatting === "user")
         ? `The AI now needs more than ${playerScore} to win!`
         : `You now need more than ${computerScore} to win!`;
-
-      document.getElementById("inningsOverMessage").textContent = `
-        ${msg}
-        ${needed}
-      `;
+      document.getElementById("inningsOverMessage").textContent = `${msg} ${needed}`;
       showPage("inningsOverPage");
       innings = 2;
     }
-
-    /*
-      START NEXT INNINGS
-    */
+    
+    // START NEXT INNINGS
     function startNextInnings() {
-      // Switch who is batting/bowling
-      if (gameMode === "userBatFirst") {
-        currentBatting = "computer";
-        showBowlingPage();
-      } else {
-        currentBatting = "user";
-        showBattingPage();
-      }
+      if (gameMode === "userBatFirst") { currentBatting = "computer"; showBowlingPage(); }
+      else { currentBatting = "user"; showBattingPage(); }
     }
-
-    /*
-      SHOW RESULT PAGE
-    */
+    
+    // RESULT PAGE
     function showResult(result) {
       showPage("resultPage");
-      const titleEl   = document.getElementById("resultTitle");
+      const titleEl = document.getElementById("resultTitle");
       const messageEl = document.getElementById("resultMessage");
-      const confetti  = document.getElementById("confettiEffect");
+      const confetti = document.getElementById("confettiEffect");
       if (result === "win") {
         titleEl.textContent = "VICTORY!";
         titleEl.classList.add("win-animation");
         confetti.style.display = "block";
         if (gameMode === "userBatFirst" && currentBatting === "computer") {
-          messageEl.textContent = `
-            ${playerName}, you successfully defended your total of ${playerScore}!
-            AI only managed ${computerScore}.
-          `;
+          messageEl.textContent = `${playerName}, you successfully defended your total of ${playerScore}! AI only managed ${computerScore}.`;
         } else if (gameMode === "userBowlFirst" && currentBatting === "user") {
-          messageEl.textContent = `
-            ${playerName}, you chased down the target!
-            Your score: ${playerScore}, AI: ${computerScore}.
-          `;
+          messageEl.textContent = `${playerName}, you chased down the target! Your score: ${playerScore}, AI: ${computerScore}.`;
         } else if (currentBatting === "user") {
-          messageEl.textContent = `
-            You chased the target with a score of ${playerScore} vs AI's ${computerScore}.
-          `;
+          messageEl.textContent = `You chased the target with a score of ${playerScore} vs AI's ${computerScore}.`;
         } else {
-          messageEl.textContent = `
-            You defended your score of ${playerScore}! AI got only ${computerScore}.
-          `;
+          messageEl.textContent = `You defended your score of ${playerScore}! AI got only ${computerScore}.`;
         }
       } else {
         titleEl.textContent = "DEFEAT!";
         titleEl.classList.remove("win-animation");
         confetti.style.display = "none";
         if (gameMode === "userBatFirst" && currentBatting === "computer") {
-          messageEl.textContent = `
-            ${playerName}, AI chased your total of ${playerScore}.
-            AI scored ${computerScore}.
-          `;
+          messageEl.textContent = `${playerName}, AI chased your total of ${playerScore}. AI scored ${computerScore}.`;
         } else if (gameMode === "userBowlFirst" && currentBatting === "user") {
-          messageEl.textContent = `
-            You couldn't chase the target. You got ${playerScore} vs AI's ${computerScore}.
-          `;
+          messageEl.textContent = `You couldn't chase the target. You got ${playerScore} vs AI's ${computerScore}.`;
         } else if (currentBatting === "user") {
-          messageEl.textContent = `
-            You were all out for ${playerScore}, and the target was ${target}.
-          `;
+          messageEl.textContent = `You were all out for ${playerScore}, and the target was ${target}.`;
         } else {
-          messageEl.textContent = `
-            AI posted ${computerScore}, and you couldn't defend. Better luck next time!
-          `;
+          messageEl.textContent = `AI posted ${computerScore}, and you couldn't defend. Better luck next time!`;
         }
       }
     }
-
-    /*
-      HELPER: Get a random run from 1 to 10
-    */
-    function randomRun() {
-      return runChoices[Math.floor(Math.random() * runChoices.length)];
-    }
   </script>
 </body>
-  </html>
+</html>
