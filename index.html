@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hand Cricket V2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+
+  <style>
+    /* 
+      GLOBAL NEON FUTURISTIC STYLING 
+    */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      font-family: 'Orbitron', sans-serif;
+      color: #0ff;
+      overflow: hidden; /* We'll show pages one at a time */
+    }
+    /* 
+      SCANNING-LINE BACKGROUND
+      Adds a subtle futuristic vibe behind everything 
+    */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,255,255,0.02),
+        rgba(0,255,255,0.02) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+    }
+
+    /* 
+      GLITCH HEADING 
+      We'll display the main title with a glitch effect
+    */
+    h1.glitch {
+      position: relative;
+      font-size: 2.8em;
+      text-align: center;
+      margin: 20px 0;
+    }
+    h1.glitch::before,
+    h1.glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%;
+      overflow: hidden;
+      color: #0ff;
+    }
+    /* Red/blue offsets to create glitch illusions */
+    h1.glitch::before {
+      left: 2px;
+      text-shadow: -2px 0 #f00;
+      clip: rect(44px, 450px, 56px, 0);
+      animation: glitch-anim 2s infinite linear alternate-reverse;
+    }
+    h1.glitch::after {
+      left: -2px;
+      text-shadow: -2px 0 #0ff;
+      clip: rect(85px, 450px, 140px, 0);
+      animation: glitch-anim2 2s infinite linear alternate-reverse;
+    }
+
+    @keyframes glitch-anim {
+      0%   { clip: rect(42px, 9999px, 44px, 0); }
+      20%  { clip: rect(12px, 9999px, 18px, 0); }
+      40%  { clip: rect(62px, 9999px, 80px, 0); }
+      60%  { clip: rect(32px, 9999px, 46px, 0); }
+      80%  { clip: rect(12px, 9999px, 18px, 0); }
+      100% { clip: rect(42px, 9999px, 44px, 0); }
+    }
+    @keyframes glitch-anim2 {
+      0%   { clip: rect(52px, 9999px, 90px, 0); }
+      20%  { clip: rect(82px, 9999px, 90px, 0); }
+      40%  { clip: rect(12px, 9999px, 18px, 0); }
+      60%  { clip: rect(42px, 9999px, 50px, 0); }
+      80%  { clip: rect(72px, 9999px, 86px, 0); }
+      100% { clip: rect(52px, 9999px, 90px, 0); }
+    }
+
+    /* 
+      PAGE LAYOUT 
+      - multiple pages, only one is active
+      - center them below the heading
+    */
+    .page {
+      position: absolute;
+      top: 100px; /* So it doesn't overlap with the glitch heading */
+      left: 0;
+      width: 100%;
+      height: calc(100vh - 100px);
+      padding: 20px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .active {
+      display: flex;
+      animation: neonFade 0.8s ease-out forwards;
+    }
+    @keyframes neonFade {
+      0% {
+        opacity: 0;
+        transform: scale(0.9) rotateX(10deg);
+        filter: blur(5px);
+      }
+      50% {
+        opacity: 0.5;
+        transform: scale(1.02) rotateX(-5deg);
+        filter: blur(2px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) rotateX(0deg);
+        filter: blur(0);
+      }
+    }
+
+    /* 
+      CONTAINER 
+      - center aligned, no extra margin
+    */
+    .container {
+      width: 90%;
+      max-width: 500px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid #0ff;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 0 20px #0ff;
+      margin: 0; 
+    }
+
+    /* Flicker effect for sub-headings */
+    .flicker {
+      animation: flicker 3s infinite;
+    }
+    @keyframes flicker {
+      0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        opacity: 1;
+      }
+      20%, 24%, 55% {
+        opacity: 0.4;
+      }
+      90% {
+        opacity: 0.7;
+      }
+    }
+
+    /* 
+      NEON INPUT 
+    */
+    input[type="text"] {
+      background: transparent;
+      border: 2px solid #0ff;
+      border-radius: 8px;
+      color: #0ff;
+      padding: 8px 12px;
+      font-size: 1em;
+      outline: none;
+      text-align: center;
+      width: 80%;
+      max-width: 300px;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+    }
+    input[type="text"]::placeholder {
+      color: rgba(0,255,255,0.5);
+    }
+    input[type="text"]:focus {
+      box-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+    }
+
+    /* 
+      NEON BUTTONS 
+      - Sliding glow effect 
+    */
+    button {
+      position: relative;
+      display: inline-block;
+      background: transparent;
+      border: 2px solid #0ff;
+      border-radius: 8px;
+      color: #0ff;
+      font-size: 1em;
+      padding: 10px 20px;
+      margin: 10px 5px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: color 0.4s ease;
+    }
+    button::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: #0ff;
+      transition: 0.5s;
+      z-index: -1;
+    }
+    button:hover {
+      color: #000;
+    }
+    button:hover::before {
+      left: 0;
+    }
+
+    /* 
+      RUN BUTTONS GRID 
+    */
+    .run-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .run-buttons button {
+      width: 60px;
+      font-size: 1.1em;
+    }
+
+    /* 
+      SCORE DISPLAY 
+    */
+    .score-display {
+      font-size: 1.2em;
+      margin: 10px 0;
+    }
+
+    /* 
+      INNINGS OVER PAGE 
+      - Flickering title 
+    */
+    .innings-over-title {
+      animation: flicker 2s infinite;
+    }
+
+    /* 
+      FINAL RESULT PAGE 
+      - If user wins, show confetti 
+    */
+    .win-animation {
+      animation: winGlow 2s infinite alternate;
+    }
+    @keyframes winGlow {
+      from { text-shadow: 0 0 10px #ff0, 0 0 20px #ff0; }
+      to   { text-shadow: 0 0 25px #ff0, 0 0 40px #ff0; }
+    }
+    .confetti {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.2), transparent 70%);
+      animation: confetti 3s linear infinite;
+      opacity: 0.3;
+    }
+    @keyframes confetti {
+      0%   { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+  </style>
+</head>
+<body>
+  <!-- UPDATED GLITCH TITLE -->
+  <h1 class="glitch" data-text="Hand Cricket V2">Hand Cricket V2</h1>
+
+  <!-- INTRO PAGE: Ask Player's Name -->
+  <div id="introPage" class="page active">
+    <div class="container">
+      <!-- Removed "future of cricket," replaced with a simple subheading -->
+      <h2 class="flicker">Hand Cricket</h2>
+      <p>Please enter your name:</p>
+      <input type="text" id="playerNameInput" placeholder="Your Name">
+      <br><br>
+      <button onclick="startGame()">Start Game</button>
+    </div>
+  </div>
+
+  <!-- TOSS PAGE -->
+  <div id="tossPage" class="page">
+    <div class="container">
+      <h2 class="flicker" id="tossTitle">Toss Time!</h2>
+      <p id="tossSubtitle">Choose Heads or Tails:</p>
+      <button onclick="selectToss('heads')">Heads</button>
+      <button onclick="selectToss('tails')">Tails</button>
+      <p id="tossMessage"></p>
+      <button id="tossContinueBtn" style="display:none;" onclick="proceedAfterToss()">Continue</button>
+    </div>
+  </div>
+
+  <!-- CHOOSE BAT/BOWL PAGE (if user wins toss) -->
+  <div id="chooseBatBowlPage" class="page">
+    <div class="container">
+      <h2 class="flicker">You won the toss!</h2>
+      <p>Choose your play:</p>
+      <button onclick="selectBatBowl('bat')">Bat</button>
+      <button onclick="selectBatBowl('bowl')">Bowl</button>
+    </div>
+  </div>
+
+  <!-- BATTING PAGE -->
+  <div id="battingPage" class="page">
+    <div class="container">
+      <h2 class="flicker" id="battingTitle"></h2>
+      <p class="score-display">
+        <span id="playerNameScore">Player's Score:</span>
+        <span id="playerScoreDisplay">0</span>
+      </p>
+      <p id="battingStatus">Select a run (1–10):</p>
+      <div class="run-buttons" id="battingButtons"></div>
+    </div>
+  </div>
+
+  <!-- BOWLING PAGE -->
+  <div id="bowlingPage" class="page">
+    <div class="container">
+      <h2 class="flicker" id="bowlingTitle"></h2>
+      <p class="score-display">
+        AI Score: <span id="computerScoreDisplay">0</span>
+      </p>
+      <p id="bowlingStatus">Select a run (1–10):</p>
+      <div class="run-buttons" id="bowlingButtons"></div>
+    </div>
+  </div>
+
+  <!-- INNINGS OVER PAGE -->
+  <div id="inningsOverPage" class="page">
+    <div class="container">
+      <h2 class="innings-over-title">Innings Over!</h2>
+      <p id="inningsOverMessage"></p>
+      <button onclick="startNextInnings()">Next Innings</button>
+    </div>
+  </div>
+
+  <!-- RESULT PAGE -->
+  <div id="resultPage" class="page">
+    <div class="container">
+      <h2 id="resultTitle"></h2>
+      <p id="resultMessage"></p>
+      <button onclick="restartGame()">Play Again</button>
+    </div>
+    <!-- Confetti effect for a win -->
+    <div class="confetti" id="confettiEffect" style="display:none;"></div>
+  </div>
+
+  <script>
+    /*
+      GLOBAL VARIABLES
+    */
+    let playerName       = "";
+    let playerScore      = 0;
+    let computerScore    = 0;
+    let innings          = 1;   // 1 for first innings, 2 for second
+    let target           = 0;   // Score to chase in second innings
+    let gameMode         = "";  // "userBatFirst" or "userBowlFirst"
+    let currentBatting   = "";  // "user" or "computer" during the innings
+
+    const tossChoices    = ["heads", "tails"];
+    const batBowlChoices = ["bat", "bowl"];
+    const runChoices     = [1,2,3,4,5,6,7,8,9,10];
+
+    /*
+      PAGE NAVIGATION UTILS
+    */
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+      });
+      document.getElementById(pageId).classList.add('active');
+    }
+
+    /*
+      RESTART GAME ENTIRELY
+    */
+    function restartGame() {
+      playerScore = 0;
+      computerScore = 0;
+      innings = 1;
+      target = 0;
+      gameMode = "";
+      currentBatting = "";
+      document.getElementById("playerScoreDisplay").textContent = "0";
+      document.getElementById("computerScoreDisplay").textContent = "0";
+      document.getElementById("tossMessage").textContent = "";
+      document.getElementById("tossContinueBtn").style.display = "none";
+      document.getElementById("confettiEffect").style.display = "none";
+      showPage("introPage");
+    }
+
+    /*
+      1) INTRO PAGE: Player enters name
+    */
+    function startGame() {
+      const nameInput = document.getElementById("playerNameInput");
+      if (nameInput.value.trim() === "") {
+        alert("Please enter your name!");
+        return;
+      }
+      playerName = nameInput.value.trim();
+      // Insert player's name in scoreboard labels
+      document.getElementById("playerNameScore").textContent = `${playerName}'s Score:`;
+      showPage("tossPage");
+    }
+
+    /*
+      2) TOSS PAGE
+    */
+    function selectToss(userChoice) {
+      const correctToss = tossChoices[Math.floor(Math.random() * tossChoices.length)];
+      if (userChoice === correctToss) {
+        document.getElementById("tossMessage").textContent = 
+          `Congrats, ${playerName}! You won the toss.`;
+        // Show continue button to go to bat/bowl choice
+        document.getElementById("tossContinueBtn").style.display = "inline-block";
+      } else {
+        // User lost the toss
+        const aiChoice = batBowlChoices[Math.floor(Math.random() * batBowlChoices.length)];
+        document.getElementById("tossMessage").textContent = 
+          `Oops, ${playerName}! You lost the toss. The AI chose to ${aiChoice} first.`;
+        document.getElementById("tossContinueBtn").style.display = "inline-block";
+        // Determine game mode based on AI choice
+        if (aiChoice === "bowl") {
+          gameMode = "userBatFirst";
+          currentBatting = "user";
+        } else {
+          gameMode = "userBowlFirst";
+          currentBatting = "computer";
+        }
+      }
+    }
+
+    // Called after toss message
+    function proceedAfterToss() {
+      if (document.getElementById("tossMessage").textContent.includes("won the toss")) {
+        // Go choose bat or bowl
+        showPage("chooseBatBowlPage");
+      } else {
+        // AI decided already
+        if (gameMode === "userBatFirst") {
+          showBattingPage();
+        } else {
+          showBowlingPage();
+        }
+      }
+    }
+
+    /*
+      3) CHOOSE BAT/BOWL PAGE (if user wins toss)
+    */
+    function selectBatBowl(choice) {
+      if (choice === "bat") {
+        gameMode = "userBatFirst";
+        currentBatting = "user";
+        showBattingPage();
+      } else {
+        gameMode = "userBowlFirst";
+        currentBatting = "computer";
+        showBowlingPage();
+      }
+    }
+
+    /*
+      BATTING PAGE
+    */
+    function showBattingPage() {
+      // Update title
+      document.getElementById("battingTitle").textContent = 
+        (innings === 1) ? `${playerName}, you're Batting First!` : `${playerName}, chase the target!`;
+      document.getElementById("playerScoreDisplay").textContent = playerScore;
+      // Clear status
+      document.getElementById("battingStatus").textContent = "Select a run (1–10):";
+      // Generate run buttons
+      generateRunButtons("battingButtons", handleBatting);
+      showPage("battingPage");
+    }
+
+    /*
+      BOWLING PAGE
+    */
+    function showBowlingPage() {
+      // Update title
+      document.getElementById("bowlingTitle").textContent = 
+        (innings === 1) ? `${playerName}, you're Bowling First!` : `${playerName}, defend the target!`;
+      document.getElementById("computerScoreDisplay").textContent = computerScore;
+      document.getElementById("bowlingStatus").textContent = "Select a run (1–10):";
+      // Generate run buttons
+      generateRunButtons("bowlingButtons", handleBowling);
+      showPage("bowlingPage");
+    }
+
+    /*
+      Generate run buttons (1–10) in the given container
+    */
+    function generateRunButtons(containerId, callback) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
+      runChoices.forEach(run => {
+        const btn = document.createElement("button");
+        btn.textContent = run;
+        btn.onclick = () => { callback(run); };
+        container.appendChild(btn);
+      });
+    }
+
+    /*
+      BATTING HANDLER
+    */
+    function handleBatting(userRun) {
+      const compRun = randomRun();
+      document.getElementById("battingStatus").textContent = 
+        `${playerName} chose ${userRun}, AI shows ${compRun}.`;
+      if (userRun === compRun) {
+        // Out
+        setTimeout(() => { endInnings("batting"); }, 500);
+      } else {
+        playerScore += userRun;
+        document.getElementById("playerScoreDisplay").textContent = playerScore;
+        // If second innings and user surpasses target
+        if (innings === 2 && playerScore > target) {
+          // User wins immediately
+          setTimeout(() => { showResult("win"); }, 500);
+        }
+      }
+    }
+
+    /*
+      BOWLING HANDLER
+    */
+    function handleBowling(userRun) {
+      const compRun = randomRun();
+      document.getElementById("bowlingStatus").textContent = 
+        `${playerName} chose ${userRun}, AI shows ${compRun}.`;
+      if (userRun === compRun) {
+        // AI Out
+        setTimeout(() => { endInnings("bowling"); }, 500);
+      } else {
+        computerScore += compRun;
+        document.getElementById("computerScoreDisplay").textContent = computerScore;
+        // If second innings and AI surpasses target
+        if (innings === 2 && computerScore > target) {
+          setTimeout(() => { showResult("loss"); }, 500);
+        }
+      }
+    }
+
+    /*
+      END OF INNINGS
+    */
+    function endInnings(context) {
+      if (innings === 1) {
+        // First innings over
+        if (context === "batting") {
+          target = playerScore;
+        } else {
+          target = computerScore;
+        }
+        showInningsOverPage();
+      } else {
+        // Second innings over => decide outcome
+        if (currentBatting === "user") {
+          if (playerScore > target) {
+            showResult("win");
+          } else {
+            showResult("loss");
+          }
+        } else {
+          if (computerScore > target) {
+            showResult("loss");
+          } else {
+            showResult("win");
+          }
+        }
+      }
+    }
+
+    /*
+      INNINGS OVER PAGE
+    */
+    function showInningsOverPage() {
+      const msg = (gameMode === "userBatFirst" && currentBatting === "user")
+        ? `${playerName}, you got out on ${playerScore}.`
+        : (gameMode === "userBowlFirst" && currentBatting === "computer")
+        ? `The AI got out on ${computerScore}.`
+        : (gameMode === "userBatFirst" && currentBatting === "computer")
+        ? `AI finished batting with ${computerScore}.`
+        : `You finished batting with ${playerScore}.`;
+
+      const needed = (currentBatting === "user")
+        ? `The AI now needs more than ${playerScore} to win!`
+        : `You now need more than ${computerScore} to win!`;
+
+      document.getElementById("inningsOverMessage").textContent = `
+        ${msg}
+        ${needed}
+      `;
+      showPage("inningsOverPage");
+      innings = 2;
+    }
+
+    /*
+      START NEXT INNINGS
+    */
+    function startNextInnings() {
+      // Switch who is batting/bowling
+      if (gameMode === "userBatFirst") {
+        currentBatting = "computer";
+        showBowlingPage();
+      } else {
+        currentBatting = "user";
+        showBattingPage();
+      }
+    }
+
+    /*
+      SHOW RESULT PAGE
+    */
+    function showResult(result) {
+      showPage("resultPage");
+      const titleEl   = document.getElementById("resultTitle");
+      const messageEl = document.getElementById("resultMessage");
+      const confetti  = document.getElementById("confettiEffect");
+      if (result === "win") {
+        titleEl.textContent = "VICTORY!";
+        titleEl.classList.add("win-animation");
+        confetti.style.display = "block";
+        if (gameMode === "userBatFirst" && currentBatting === "computer") {
+          messageEl.textContent = `
+            ${playerName}, you successfully defended your total of ${playerScore}!
+            AI only managed ${computerScore}.
+          `;
+        } else if (gameMode === "userBowlFirst" && currentBatting === "user") {
+          messageEl.textContent = `
+            ${playerName}, you chased down the target!
+            Your score: ${playerScore}, AI: ${computerScore}.
+          `;
+        } else if (currentBatting === "user") {
+          messageEl.textContent = `
+            You chased the target with a score of ${playerScore} vs AI's ${computerScore}.
+          `;
+        } else {
+          messageEl.textContent = `
+            You defended your score of ${playerScore}! AI got only ${computerScore}.
+          `;
+        }
+      } else {
+        titleEl.textContent = "DEFEAT!";
+        titleEl.classList.remove("win-animation");
+        confetti.style.display = "none";
+        if (gameMode === "userBatFirst" && currentBatting === "computer") {
+          messageEl.textContent = `
+            ${playerName}, AI chased your total of ${playerScore}.
+            AI scored ${computerScore}.
+          `;
+        } else if (gameMode === "userBowlFirst" && currentBatting === "user") {
+          messageEl.textContent = `
+            You couldn't chase the target. You got ${playerScore} vs AI's ${computerScore}.
+          `;
+        } else if (currentBatting === "user") {
+          messageEl.textContent = `
+            You were all out for ${playerScore}, and the target was ${target}.
+          `;
+        } else {
+          messageEl.textContent = `
+            AI posted ${computerScore}, and you couldn't defend. Better luck next time!
+          `;
+        }
+      }
+    }
+
+    /*
+      HELPER: Get a random run from 1 to 10
+    */
+    function randomRun() {
+      return runChoices[Math.floor(Math.random() * runChoices.length)];
+    }
+  </script>
+</body>
+</html>
