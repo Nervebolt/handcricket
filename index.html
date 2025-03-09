@@ -9,8 +9,13 @@
   <style>
     /* 
       GLOBAL NEON FUTURISTIC STYLING
+      (Same as your previous code, with advanced animations, 
+       glitch headings, scanning-line BG, custom popups, etc.)
     */
-    * { box-sizing: border-box; }
+
+    * {
+      box-sizing: border-box;
+    }
     body {
       margin: 0; padding: 0;
       background: #000;
@@ -18,11 +23,9 @@
       color: #0ff;
       overflow: hidden;
     }
-    /* Prevent rotation on mobile (best in PWA/fullscreen) */
     @media screen and (orientation: landscape) {
       body { transform: rotate(90deg); }
     }
-    /* Scanning-line background */
     body::before {
       content: "";
       position: fixed;
@@ -38,10 +41,6 @@
       );
     }
 
-    /* 
-      ADVANCED "GLITCH SWOOSH" ANIMATION
-      - We'll use this for popups
-    */
     @keyframes glitchSwooshIn {
       0% {
         opacity: 0;
@@ -65,10 +64,7 @@
       }
     }
 
-    /* 
-      RULES POPUP
-      (Now uses glitchSwooshIn)
-    */
+    /* RULES POPUP */
     #rulesPopup {
       position: fixed;
       top: 0; left: 0;
@@ -91,16 +87,13 @@
       animation: glitchSwooshIn 1s ease-out;
     }
 
-    /* 
-      CUSTOM POPUP FOR ALERTS 
-      (#messagePopup)
-    */
+    /* CUSTOM ALERT-LIKE POPUP */
     #messagePopup {
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
       background: rgba(0,0,0,0.8);
-      display: none; /* hidden by default */
+      display: none;
       align-items: center;
       justify-content: center;
       z-index: 9999;
@@ -117,9 +110,7 @@
       animation: glitchSwooshIn 0.8s ease-out;
     }
 
-    /* 
-      GLITCH HEADING 
-    */
+    /* GLITCH HEADING */
     h1.glitch {
       position: relative;
       font-size: 2.8em;
@@ -164,9 +155,7 @@
       100% { clip: rect(52px, 9999px, 90px, 0); }
     }
 
-    /* 
-      PAGE LAYOUT
-    */
+    /* PAGE LAYOUT */
     .page {
       position: absolute;
       top: 100px;
@@ -179,13 +168,9 @@
       align-items: center;
       justify-content: center;
     }
-    .active {
-      display: flex;
-    }
+    .active { display: flex; }
 
-    /* 
-      CONTAINER
-    */
+    /* CONTAINER */
     .container {
       width: 90%;
       max-width: 500px;
@@ -208,9 +193,7 @@
       90% { opacity: 0.7; }
     }
 
-    /* 
-      NEON INPUT
-    */
+    /* NEON INPUT */
     input[type="text"] {
       background: transparent;
       border: 2px solid #0ff;
@@ -225,13 +208,14 @@
       margin-top: 10px;
       transition: all 0.3s ease;
     }
-    input[type="text"]::placeholder { color: rgba(0,255,255,0.5); }
-    input[type="text"]:focus { box-shadow: 0 0 10px #0ff, 0 0 20px #0ff; }
+    input[type="text"]::placeholder {
+      color: rgba(0,255,255,0.5);
+    }
+    input[type="text"]:focus {
+      box-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+    }
 
-    /* 
-      NEON BUTTONS 
-      - Sliding glow effect
-    */
+    /* NEON BUTTONS (sliding glow) */
     button {
       position: relative;
       display: inline-block;
@@ -262,9 +246,7 @@
       left: 0;
     }
 
-    /* 
-      RUN BUTTONS GRID
-    */
+    /* RUN BUTTONS GRID */
     .run-buttons {
       display: flex;
       flex-wrap: wrap;
@@ -277,17 +259,13 @@
       font-size: 1.1em;
     }
 
-    /* 
-      SCORE DISPLAY
-    */
+    /* SCORE DISPLAY */
     .score-display {
       font-size: 1.2em;
       margin: 10px 0;
     }
 
-    /* 
-      MILESTONE PAGE ANIMATION
-    */
+    /* MILESTONE PAGE ANIMATION */
     .milestone-title {
       font-size: 2em;
       animation: pulseGlow 2s infinite alternate;
@@ -298,9 +276,7 @@
       to   { text-shadow: 0 0 30px #ff0, 0 0 40px #ff0; }
     }
 
-    /* 
-      CONFETTI EFFECT FOR WIN
-    */
+    /* CONFETTI EFFECT */
     .confetti {
       position: absolute;
       top: 0; left: 0;
@@ -315,9 +291,7 @@
       100% { transform: translateY(100%); }
     }
 
-    /* 
-      RESPONSIVE ADJUSTMENTS FOR LAPTOPS
-    */
+    /* RESPONSIVE ADJUSTMENTS FOR LAPTOPS */
     @media (min-width: 1024px) {
       .container {
         max-width: 700px;
@@ -378,11 +352,11 @@
         <button id="easyBtn" onclick="setDifficulty('easy')">Easy</button>
         <button id="hardBtn" onclick="setDifficulty('hard')">Hard</button>
       </div>
-      <div class="view-your">
+      <div style="margin-top: 20px;">
         <p>View your:</p>
         <button onclick="showStatsPage()">Stats</button>
       </div>
-      <div class="extra-buttons">
+      <div style="margin-top: 10px;">
         <button onclick="startGame()">Play Hand Cricket</button>
       </div>
     </div>
@@ -427,7 +401,9 @@
   <div id="bowlingPage" class="page">
     <div class="container">
       <h2 class="flicker" id="bowlingTitle"></h2>
-      <p class="score-display">AI Score: <span id="computerScoreDisplay">0</span></p>
+      <p class="score-display">
+        AI Score: <span id="computerScoreDisplay">0</span>
+      </p>
       <p id="bowlingStatus">Select a run (1–10):</p>
       <div class="run-buttons" id="bowlingButtons"></div>
     </div>
@@ -444,13 +420,13 @@
   <!-- INNINGS OVER PAGE -->
   <div id="inningsOverPage" class="page">
     <div class="container">
-      <h2 class="flicker innings-over-title">Innings Over!</h2>
+      <h2 class="flicker">Innings Over!</h2>
       <p id="inningsOverMessage"></p>
       <button onclick="startNextInnings()">Next Innings</button>
     </div>
   </div>
 
-  <!-- RESULT PAGE (briefly shown before stats) -->
+  <!-- RESULT PAGE -->
   <div id="resultPage" class="page">
     <div class="container">
       <h2 id="resultTitle"></h2>
@@ -469,30 +445,31 @@
   </div>
 
   <script>
-    /* ================================
-       GLOBAL VARIABLES & SETUP
-       ================================ */
+    /*
+      GLOBAL VARIABLES
+    */
     let playerName       = "";
-    let difficulty       = ""; // must be chosen
+    let difficulty       = "";  // must be chosen
     let playerScore      = 0;
     let computerScore    = 0;
-    let innings          = 1;  // 1 for first innings, 2 for second
-    let target           = 0;  // Score to chase in second innings
-    let gameMode         = ""; // "userBatFirst" or "userBowlFirst"
-    let currentBatting   = ""; // "user" or "computer"
+    let innings          = 1;
+    let target           = 0;
+    let gameMode         = "";
+    let currentBatting   = "";
     let userNextMilestone = 50;
     let aiNextMilestone   = 50;
-    let canClick          = true; // spam prevention
-    let userMoveHistory   = [];   // for AI in hard mode
+    let canClick          = true;
+    let userMoveHistory   = [];
     let tossDecided       = false;
+    let didUserWinToss    = false; // <--- NEW boolean to track if user won toss
 
-    const tossChoices     = ["heads", "tails"];
-    const batBowlChoices  = ["bat", "bowl"];
-    const runChoices      = [1,2,3,4,5,6,7,8,9,10];
+    const tossChoices    = ["heads", "tails"];
+    const batBowlChoices = ["bat", "bowl"];
+    const runChoices     = [1,2,3,4,5,6,7,8,9,10];
 
-    /* ================================
-       CUSTOM POPUP FUNCTIONS
-       ================================ */
+    /*
+      CUSTOM POPUP REPLACING ALERT()
+    */
     function showCustomPopup(message) {
       document.getElementById("messagePopupText").textContent = message;
       document.getElementById("messagePopup").style.display = "flex";
@@ -501,16 +478,16 @@
       document.getElementById("messagePopup").style.display = "none";
     }
 
-    /* ================================
-       RULES POPUP
-       ================================ */
+    /*
+      RULES POPUP
+    */
     function closeRulesPopup() {
       document.getElementById("rulesPopup").style.display = "none";
     }
 
-    /* ================================
-       STATS (localStorage)
-       ================================ */
+    /*
+      STATS (localStorage)
+    */
     function getStats() {
       let stats = localStorage.getItem("handCricketStats");
       return stats ? JSON.parse(stats) : { wins: 0, losses: 0, highestScore: 0, totalMatches: 0 };
@@ -538,9 +515,9 @@
       restartGame();
     }
 
-    /* ================================
-       GAME FLOW
-       ================================ */
+    /*
+      PAGE & MODE SETUP
+    */
     function setDifficulty(mode) {
       difficulty = mode;
       document.getElementById("easyBtn").style.background = (mode === "easy") ? "#0ff" : "transparent";
@@ -576,6 +553,7 @@
       aiNextMilestone   = 50;
       userMoveHistory   = [];
       tossDecided       = false;
+      didUserWinToss    = false; // Reset
 
       document.getElementById("playerScoreDisplay").textContent   = "0";
       document.getElementById("computerScoreDisplay").textContent = "0";
@@ -583,14 +561,15 @@
       document.getElementById("tossContinueBtn").style.display    = "none";
       document.getElementById("confettiEffect").style.display     = "none";
 
-      // Keep difficulty as last selected or reset? 
-      // If you want to reset difficulty each time, set difficulty=""
-      // For now we keep difficulty to let user replay same mode.
+      // If you want to reset difficulty each time, set difficulty = ""
+      // For now, let's keep it so user can replay same mode.
 
       showPage("introPage");
     }
 
-    /* INTRO PAGE */
+    /*
+      INTRO PAGE
+    */
     function startGame() {
       const nameInput = document.getElementById("playerNameInput");
       if (nameInput.value.trim() === "") {
@@ -606,18 +585,28 @@
       showPage("tossPage");
     }
 
-    /* TOSS PAGE */
+    /*
+      TOSS PAGE
+    */
     function selectToss(userChoice) {
       if (tossDecided) return;
       tossDecided = true;
+
       const correctToss = tossChoices[Math.floor(Math.random() * tossChoices.length)];
       if (userChoice === correctToss) {
-        document.getElementById("tossMessage").textContent = `Congrats, ${playerName}! You won the toss.`;
+        // User won toss
+        didUserWinToss = true;
+        document.getElementById("tossMessage").textContent =
+          `Congrats, ${playerName}! You won the toss.`;
         document.getElementById("tossContinueBtn").style.display = "inline-block";
       } else {
+        // User lost toss
+        didUserWinToss = false;
         const aiChoice = batBowlChoices[Math.floor(Math.random() * batBowlChoices.length)];
-        document.getElementById("tossMessage").textContent = `Oops, ${playerName}! You lost the toss. The AI chose to ${aiChoice} first.`;
+        document.getElementById("tossMessage").textContent =
+          `Oops, ${playerName}! You lost the toss. The AI chose to ${aiChoice} first.`;
         document.getElementById("tossContinueBtn").style.display = "inline-block";
+
         if (aiChoice === "bowl") {
           gameMode       = "userBatFirst";
           currentBatting = "user";
@@ -627,16 +616,24 @@
         }
       }
     }
+
     function proceedAfterToss() {
-      if (document.getElementById("tossMessage").textContent.includes("won the toss")) {
+      if (didUserWinToss) {
+        // Show choose bat/bowl page
         showPage("chooseBatBowlPage");
       } else {
-        if (gameMode === "userBatFirst") { showBattingPage(); }
-        else { showBowlingPage(); }
+        // AI decided
+        if (gameMode === "userBatFirst") {
+          showBattingPage();
+        } else {
+          showBowlingPage();
+        }
       }
     }
 
-    /* CHOOSE BAT/BOWL PAGE */
+    /*
+      CHOOSE BAT/BOWL PAGE
+    */
     function selectBatBowl(choice) {
       if (choice === "bat") {
         gameMode       = "userBatFirst";
@@ -649,7 +646,9 @@
       }
     }
 
-    /* BATTING PAGE */
+    /*
+      BATTING PAGE
+    */
     function showBattingPage() {
       document.getElementById("battingTitle").textContent =
         (innings === 1)
@@ -661,7 +660,9 @@
       showPage("battingPage");
     }
 
-    /* BOWLING PAGE */
+    /*
+      BOWLING PAGE
+    */
     function showBowlingPage() {
       document.getElementById("bowlingTitle").textContent =
         (innings === 1)
@@ -673,7 +674,23 @@
       showPage("bowlingPage");
     }
 
-    /* BATTING HANDLER */
+    /*
+      GENERATE RUN BUTTONS
+    */
+    function generateRunButtons(containerId, callback) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
+      runChoices.forEach(run => {
+        const btn = document.createElement("button");
+        btn.textContent = run;
+        btn.onclick = () => { callback(run); };
+        container.appendChild(btn);
+      });
+    }
+
+    /*
+      BATTING HANDLER
+    */
     function handleBatting(userRun) {
       if (!canClick) return;
       disableClickTemporarily();
@@ -707,7 +724,9 @@
       }
     }
 
-    /* BOWLING HANDLER */
+    /*
+      BOWLING HANDLER
+    */
     function handleBowling(userRun) {
       if (!canClick) return;
       disableClickTemporarily();
@@ -740,11 +759,15 @@
       }
     }
 
-    /* SMART AI (Hard Mode) */
+    /*
+      SMART AI FOR HARD MODE
+    */
     function getSmartAIMove() {
       if (userMoveHistory.length === 0) return randomRun();
       let freq = {};
-      userMoveHistory.forEach(m => { freq[m] = (freq[m] || 0) + 1; });
+      userMoveHistory.forEach(m => {
+        freq[m] = (freq[m] || 0) + 1;
+      });
       let predicted = Object.keys(freq).reduce((a, b) => freq[a] > freq[b] ? a : b);
       predicted = parseInt(predicted);
       return (Math.random() < 0.8) ? predicted : randomRun();
@@ -752,7 +775,9 @@
     function getSmartAIMoveWhenBatting() {
       if (userMoveHistory.length === 0) return randomRun();
       let freq = {};
-      userMoveHistory.forEach(m => { freq[m] = (freq[m] || 0) + 1; });
+      userMoveHistory.forEach(m => {
+        freq[m] = (freq[m] || 0) + 1;
+      });
       let predicted = Object.keys(freq).reduce((a, b) => freq[a] > freq[b] ? a : b);
       predicted = parseInt(predicted);
       let choices = runChoices.filter(x => x !== predicted);
@@ -761,7 +786,9 @@
         : randomRun();
     }
 
-    /* MILESTONE PAGE */
+    /*
+      MILESTONE PAGE
+    */
     function showMilestonePage(isPlayer, score) {
       const milestoneTitle = document.getElementById("milestoneTitle");
       milestoneTitle.textContent = isPlayer
@@ -775,7 +802,9 @@
       }, 3000);
     }
 
-    /* END OF INNINGS */
+    /*
+      END OF INNINGS
+    */
     function endInnings(context) {
       if (innings === 1) {
         target = (context === "batting") ? playerScore : computerScore;
@@ -789,7 +818,9 @@
       }
     }
 
-    /* INNINGS OVER PAGE */
+    /*
+      INNINGS OVER PAGE
+    */
     function showInningsOverPage() {
       const msg = (gameMode === "userBatFirst" && currentBatting === "user")
         ? `${playerName}, you got out on ${playerScore}.`
@@ -817,7 +848,9 @@
       }
     }
 
-    /* RESULT PAGE -> STATS PAGE */
+    /*
+      RESULT PAGE -> STATS PAGE
+    */
     function showResult(result) {
       showPage("resultPage");
       const titleEl   = document.getElementById("resultTitle");
@@ -828,7 +861,6 @@
         titleEl.textContent = "VICTORY!";
         titleEl.classList.add("win-animation");
         confetti.style.display = "block";
-
         if (gameMode === "userBatFirst" && currentBatting === "computer") {
           messageEl.textContent = `${playerName}, you successfully defended your total of ${playerScore}! AI only managed ${computerScore}.`;
         } else if (gameMode === "userBowlFirst" && currentBatting === "user") {
@@ -838,12 +870,10 @@
         } else {
           messageEl.textContent = `You defended your score of ${playerScore}! AI got only ${computerScore}.`;
         }
-
       } else {
         titleEl.textContent = "DEFEAT!";
         titleEl.classList.remove("win-animation");
         confetti.style.display = "none";
-
         if (gameMode === "userBatFirst" && currentBatting === "computer") {
           messageEl.textContent = `${playerName}, AI chased your total of ${playerScore}. AI scored ${computerScore}.`;
         } else if (gameMode === "userBowlFirst" && currentBatting === "user") {
@@ -856,9 +886,19 @@
       }
 
       updateStats(result);
-      // After 2 seconds, show the stats page
       setTimeout(() => { showStatsPage(); }, 2000);
     }
+
+    /*
+      ON LOAD, TRY LOCK ORIENTATION
+    */
+    window.addEventListener("load", function() {
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock("portrait").catch(err => console.log(err));
+      }
+      // Show rules popup on initial load
+      document.getElementById("rulesPopup").style.display = "flex";
+    });
   </script>
 </body>
 </html>
