@@ -2,35 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- Lock zoom & disable pinch-zoom; force portrait -->
+  <!-- Lock zoom & disable pinch-zoom; force portrait on mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Hand Cricket V2</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
   <style>
     /* 
-      GLOBAL NEON FUTURISTIC STYLING
-      (Same as your previous code, with advanced animations, 
-       glitch headings, scanning-line BG, custom popups, etc.)
+      GLOBAL NEON FUTURISTIC STYLING 
+      with glitch heading, scanning line BG, etc.
     */
 
     * {
       box-sizing: border-box;
     }
     body {
-      margin: 0; padding: 0;
+      margin: 0;
+      padding: 0;
       background: #000;
       font-family: 'Orbitron', sans-serif;
       color: #0ff;
-      overflow: hidden;
+      overflow: hidden; /* For phones, we typically hide overflow. */
     }
-    @media screen and (orientation: landscape) {
-      body { transform: rotate(90deg); }
-    }
+
+    /*
+      Removed the old rule:
+      @media screen and (orientation: landscape) {
+        body { transform: rotate(90deg); }
+      }
+      so laptops won't be forced to rotate 90° in normal orientation.
+    */
+
+    /* Scanning-line background */
     body::before {
       content: "";
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 100%;
       pointer-events: none;
       background: repeating-linear-gradient(
         to bottom,
@@ -41,34 +50,25 @@
       );
     }
 
-    @keyframes glitchSwooshIn {
+    /* pageGlitch for page transitions & popups */
+    @keyframes pageGlitch {
       0% {
         opacity: 0;
-        transform: translateX(-100%) skewX(45deg) scale(0.5);
-        filter: blur(8px);
-      }
-      30% {
-        opacity: 0.5;
-        transform: translateX(10%) skewX(-10deg) scale(1.1);
-        filter: blur(2px);
-      }
-      70% {
-        opacity: 0.8;
-        transform: translateX(-2%) skewX(5deg) scale(0.95);
-        filter: blur(1px);
+        filter: blur(2px) contrast(150%);
       }
       100% {
         opacity: 1;
-        transform: translateX(0) skewX(0deg) scale(1);
-        filter: blur(0);
+        filter: none;
       }
     }
 
     /* RULES POPUP */
     #rulesPopup {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 100%;
       background: rgba(0,0,0,0.95);
       display: flex;
       align-items: center;
@@ -84,14 +84,16 @@
       width: 90%;
       max-width: 400px;
       box-shadow: 0 0 20px #0ff;
-      animation: glitchSwooshIn 1s ease-out;
+      animation: pageGlitch 0.5s ease-out;
     }
 
-    /* CUSTOM ALERT-LIKE POPUP */
+    /* CUSTOM ALERT POPUP */
     #messagePopup {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 100%;
       background: rgba(0,0,0,0.8);
       display: none;
       align-items: center;
@@ -107,7 +109,7 @@
       width: 80%;
       max-width: 350px;
       box-shadow: 0 0 20px #0ff;
-      animation: glitchSwooshIn 0.8s ease-out;
+      animation: pageGlitch 0.5s ease-out;
     }
 
     /* GLITCH HEADING */
@@ -121,7 +123,8 @@
     h1.glitch::after {
       content: attr(data-text);
       position: absolute;
-      left: 0; top: 0;
+      left: 0; 
+      top: 0;
       width: 100%;
       overflow: hidden;
       color: #0ff;
@@ -155,10 +158,10 @@
       100% { clip: rect(52px, 9999px, 90px, 0); }
     }
 
-    /* PAGE LAYOUT */
+    /* PAGE LAYOUT with glitch transition */
     .page {
       position: absolute;
-      top: 100px;
+      top: 100px; 
       left: 0;
       width: 100%;
       height: calc(100vh - 100px);
@@ -168,7 +171,10 @@
       align-items: center;
       justify-content: center;
     }
-    .active { display: flex; }
+    .active {
+      display: flex;
+      animation: pageGlitch 0.5s ease-out;
+    }
 
     /* CONTAINER */
     .container {
@@ -182,7 +188,6 @@
       box-shadow: 0 0 20px #0ff;
       margin: 0;
     }
-
     /* Flicker effect for sub-headings */
     .flicker {
       animation: flicker 3s infinite;
@@ -192,8 +197,7 @@
       20%, 24%, 55% { opacity: 0.4; }
       90% { opacity: 0.7; }
     }
-
-    /* NEON INPUT */
+    /* Neon Input */
     input[type="text"] {
       background: transparent;
       border: 2px solid #0ff;
@@ -215,7 +219,7 @@
       box-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
     }
 
-    /* NEON BUTTONS (sliding glow) */
+    /* NEON BUTTONS with sliding glow */
     button {
       position: relative;
       display: inline-block;
@@ -233,8 +237,10 @@
     button::before {
       content: "";
       position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
+      top: 0; 
+      left: -100%;
+      width: 100%; 
+      height: 100%;
       background: #0ff;
       transition: 0.5s;
       z-index: -1;
@@ -276,19 +282,25 @@
       to   { text-shadow: 0 0 30px #ff0, 0 0 40px #ff0; }
     }
 
-    /* CONFETTI EFFECT */
+    /* CONFETTI EFFECT for Win Page */
     .confetti {
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 100%;
       pointer-events: none;
       background: radial-gradient(circle at center, rgba(255,255,255,0.2), transparent 70%);
       animation: confetti 3s linear infinite;
       opacity: 0.3;
     }
     @keyframes confetti {
-      0%   { transform: translateY(-100%); }
-      100% { transform: translateY(100%); }
+      0% {
+        transform: translateY(-100%);
+      }
+      100% {
+        transform: translateY(100%);
+      }
     }
 
     /* RESPONSIVE ADJUSTMENTS FOR LAPTOPS */
@@ -312,164 +324,33 @@
       }
     }
   </style>
-</head>
-<body>
-  <!-- RULES POPUP -->
-  <div id="rulesPopup">
-    <div class="popup-container">
-      <h2 class="flicker">Game Rules</h2>
-      <p>Please follow these rules:</p>
-      <ul style="text-align: left; margin: 10px auto; max-width: 300px;">
-        <li>No spamming the buttons.</li>
-        <li>Keep it fair and fun.</li>
-        <li>Enjoy the game!</li>
-      </ul>
-      <p><strong>Enjoy!</strong></p>
-      <button onclick="closeRulesPopup()">Play Hand Cricket</button>
-    </div>
-  </div>
-
-  <!-- CUSTOM POPUP FOR ALERT-LIKE MESSAGES -->
-  <div id="messagePopup">
-    <div class="popup-container">
-      <h2 class="flicker">Attention!</h2>
-      <p id="messagePopupText"></p>
-      <button onclick="closeCustomPopup()">OK</button>
-    </div>
-  </div>
-
-  <!-- GLITCH TITLE -->
-  <h1 class="glitch" data-text="Hand Cricket V2">Hand Cricket V2</h1>
-
-  <!-- INTRO PAGE -->
-  <div id="introPage" class="page active">
-    <div class="container">
-      <h2 class="flicker">Hand Cricket</h2>
-      <p>Please enter your name (max 14 characters):</p>
-      <input type="text" id="playerNameInput" placeholder="Your Name" maxlength="14">
-      <div class="mode-buttons">
-        <p>Select Mode:</p>
-        <button id="easyBtn" onclick="setDifficulty('easy')">Easy</button>
-        <button id="hardBtn" onclick="setDifficulty('hard')">Hard</button>
-      </div>
-      <div style="margin-top: 20px;">
-        <p>View your:</p>
-        <button onclick="showStatsPage()">Stats</button>
-      </div>
-      <div style="margin-top: 10px;">
-        <button onclick="startGame()">Play Hand Cricket</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- TOSS PAGE -->
-  <div id="tossPage" class="page">
-    <div class="container">
-      <h2 class="flicker">Toss Time!</h2>
-      <p id="tossSubtitle">Choose Heads or Tails:</p>
-      <button onclick="selectToss('heads')">Heads</button>
-      <button onclick="selectToss('tails')">Tails</button>
-      <p id="tossMessage"></p>
-      <button id="tossContinueBtn" style="display:none;" onclick="proceedAfterToss()">Continue</button>
-    </div>
-  </div>
-
-  <!-- CHOOSE BAT/BOWL PAGE -->
-  <div id="chooseBatBowlPage" class="page">
-    <div class="container">
-      <h2 class="flicker">You won the toss!</h2>
-      <p>Choose your play:</p>
-      <button onclick="selectBatBowl('bat')">Bat</button>
-      <button onclick="selectBatBowl('bowl')">Bowl</button>
-    </div>
-  </div>
-
-  <!-- BATTING PAGE -->
-  <div id="battingPage" class="page">
-    <div class="container">
-      <h2 class="flicker" id="battingTitle"></h2>
-      <p class="score-display">
-        <span id="playerNameScore">Player's Score:</span> 
-        <span id="playerScoreDisplay">0</span>
-      </p>
-      <p id="battingStatus">Select a run (1–10):</p>
-      <div class="run-buttons" id="battingButtons"></div>
-    </div>
-  </div>
-
-  <!-- BOWLING PAGE -->
-  <div id="bowlingPage" class="page">
-    <div class="container">
-      <h2 class="flicker" id="bowlingTitle"></h2>
-      <p class="score-display">
-        AI Score: <span id="computerScoreDisplay">0</span>
-      </p>
-      <p id="bowlingStatus">Select a run (1–10):</p>
-      <div class="run-buttons" id="bowlingButtons"></div>
-    </div>
-  </div>
-
-  <!-- MILESTONE PAGE -->
-  <div id="milestonePage" class="page">
-    <div class="container">
-      <h2 class="milestone-title" id="milestoneTitle"></h2>
-      <p id="milestoneMessage">Milestone reached!</p>
-    </div>
-  </div>
-
-  <!-- INNINGS OVER PAGE -->
-  <div id="inningsOverPage" class="page">
-    <div class="container">
-      <h2 class="flicker">Innings Over!</h2>
-      <p id="inningsOverMessage"></p>
-      <button onclick="startNextInnings()">Next Innings</button>
-    </div>
-  </div>
-
-  <!-- RESULT PAGE -->
-  <div id="resultPage" class="page">
-    <div class="container">
-      <h2 id="resultTitle"></h2>
-      <p id="resultMessage"></p>
-    </div>
-    <div class="confetti" id="confettiEffect" style="display:none;"></div>
-  </div>
-
-  <!-- STATS PAGE -->
-  <div id="statsPage" class="page">
-    <div class="container">
-      <h2 class="flicker">Your Stats</h2>
-      <p id="statsDisplay"></p>
-      <button onclick="playAgainFromStats()">Play Hand Cricket</button>
-    </div>
-  </div>
-
   <script>
-    /*
-      GLOBAL VARIABLES
-    */
-    let playerName       = "";
-    let difficulty       = "";  // must be chosen
-    let playerScore      = 0;
-    let computerScore    = 0;
-    let innings          = 1;
-    let target           = 0;
-    let gameMode         = "";
-    let currentBatting   = "";
-    let userNextMilestone = 50;
-    let aiNextMilestone   = 50;
-    let canClick          = true;
-    let userMoveHistory   = [];
-    let tossDecided       = false;
-    let didUserWinToss    = false; // <--- NEW boolean to track if user won toss
+    // Show a warning if the user tries to reload or leave the page
+    window.addEventListener("beforeunload", function (e) {
+      e.preventDefault();
+      e.returnValue = "Your progress will be lost if you leave or reload this page.";
+    });
 
-    const tossChoices    = ["heads", "tails"];
-    const batBowlChoices = ["bat", "bowl"];
-    const runChoices     = [1,2,3,4,5,6,7,8,9,10];
+    // Attempt to lock screen orientation to portrait on mobile
+    window.addEventListener("load", function() {
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock("portrait").catch(err => console.log(err));
+      }
+      // Show the rules popup
+      document.getElementById("rulesPopup").style.display = "flex";
+      // If there's a stored username, replace the input with a welcome message
+      const storedName = localStorage.getItem("handCricketUsername");
+      if (storedName) {
+        playerName = storedName;
+        const userContainer = document.getElementById("usernameContainer");
+        userContainer.innerHTML = `<p style="font-size:1.2em; margin-bottom:10px;">Welcome back! ${playerName}</p>`;
+      }
+    });
 
-    /*
-      CUSTOM POPUP REPLACING ALERT()
-    */
+    function closeRulesPopup() {
+      document.getElementById("rulesPopup").style.display = "none";
+    }
+    // Custom popup for alert-like messages
     function showCustomPopup(message) {
       document.getElementById("messagePopupText").textContent = message;
       document.getElementById("messagePopup").style.display = "flex";
@@ -478,70 +359,118 @@
       document.getElementById("messagePopup").style.display = "none";
     }
 
-    /*
-      RULES POPUP
-    */
-    function closeRulesPopup() {
-      document.getElementById("rulesPopup").style.display = "none";
-    }
+    /* GLOBAL VARIABLES */
+    let playerName       = "";
+    let difficulty       = "";  // "easy", "medium", "hard"
+    let playerScore      = 0;
+    let computerScore    = 0;
+    let innings          = 1;
+    let target           = 0;
+    let gameMode         = "";  // "userBatFirst" or "userBowlFirst"
+    let currentBatting   = "";  // "user" or "computer"
+    let userNextMilestone = 50;
+    let aiNextMilestone   = 50;
+    let canClick          = true;
+    let userMoveHistory   = [];
+    let tossDecided       = false;
+    let didUserWinToss    = false;
+
+    const tossChoices    = ["heads", "tails"];
+    const batBowlChoices = ["bat", "bowl"];
+    const runChoices     = [1,2,3,4,5,6,7,8,9,10];
 
     /*
-      STATS (localStorage)
+      STATS (including highestScore, highestScoreDifficulty)
     */
     function getStats() {
-      let stats = localStorage.getItem("handCricketStats");
-      return stats ? JSON.parse(stats) : { wins: 0, losses: 0, highestScore: 0, totalMatches: 0 };
+      let data = localStorage.getItem("handCricketStats");
+      if (!data) {
+        return {
+          wins: 0,
+          losses: 0,
+          highestScore: 0,
+          highestScoreDifficulty: "",
+          totalMatches: 0,
+          ducks: 0,
+          halfCenturies: 0,
+          centuries: 0
+        };
+      } else {
+        let stats = JSON.parse(data);
+        stats.wins                   = stats.wins                   || 0;
+        stats.losses                 = stats.losses                 || 0;
+        stats.highestScore           = stats.highestScore           || 0;
+        stats.highestScoreDifficulty = stats.highestScoreDifficulty || "";
+        stats.totalMatches           = stats.totalMatches           || 0;
+        stats.ducks                  = stats.ducks                  || 0;
+        stats.halfCenturies          = stats.halfCenturies          || 0;
+        stats.centuries              = stats.centuries              || 0;
+        return stats;
+      }
     }
     function updateStats(result) {
       let stats = getStats();
       stats.totalMatches++;
       if (result === "win") stats.wins++;
       else if (result === "loss") stats.losses++;
-      if (playerScore > stats.highestScore) stats.highestScore = playerScore;
+
+      if (playerScore > stats.highestScore) {
+        stats.highestScore = playerScore;
+        stats.highestScoreDifficulty = `(${difficulty})`; 
+      }
+      if (playerScore === 0) {
+        stats.ducks++;
+      } else if (playerScore >= 100) {
+        stats.centuries++;
+      } else if (playerScore >= 50) {
+        stats.halfCenturies++;
+      }
       localStorage.setItem("handCricketStats", JSON.stringify(stats));
     }
     function showStatsPage() {
       let stats = getStats();
       let winPercentage = stats.totalMatches > 0 ? ((stats.wins / stats.totalMatches) * 100).toFixed(2) : 0;
-      let statsText = "Total Matches: " + stats.totalMatches + "<br>" +
-                      "Wins: " + stats.wins + "<br>" +
-                      "Losses: " + stats.losses + "<br>" +
-                      "Highest Score: " + stats.highestScore + "<br>" +
-                      "Win Percentage: " + winPercentage + "%";
+      let bestScoreString = stats.highestScore > 0 
+        ? `${stats.highestScore} ${stats.highestScoreDifficulty}`
+        : "0";
+      let statsText =
+        "Total Matches: " + stats.totalMatches + "<br>" +
+        "Wins: " + stats.wins + "<br>" +
+        "Losses: " + stats.losses + "<br>" +
+        "Highest Score: " + bestScoreString + "<br>" +
+        "Ducks: " + stats.ducks + "<br>" +
+        "Half Centuries: " + stats.halfCenturies + "<br>" +
+        "Centuries: " + stats.centuries + "<br>" +
+        "Win Percentage: " + winPercentage + "%";
       document.getElementById("statsDisplay").innerHTML = statsText;
       showPage("statsPage");
     }
-    function playAgainFromStats() {
-      restartGame();
-    }
 
     /*
-      PAGE & MODE SETUP
+      MODE & PAGE FUNCTIONS
     */
     function setDifficulty(mode) {
       difficulty = mode;
-      document.getElementById("easyBtn").style.background = (mode === "easy") ? "#0ff" : "transparent";
-      document.getElementById("easyBtn").style.color      = (mode === "easy") ? "#000" : "#0ff";
-      document.getElementById("hardBtn").style.background = (mode === "hard") ? "#0ff" : "transparent";
-      document.getElementById("hardBtn").style.color      = (mode === "hard") ? "#000" : "#0ff";
+      document.getElementById("easyBtn").style.background   = (mode === "easy")   ? "#0ff" : "transparent";
+      document.getElementById("easyBtn").style.color        = (mode === "easy")   ? "#000" : "#0ff";
+      document.getElementById("mediumBtn").style.background = (mode === "medium") ? "#0ff" : "transparent";
+      document.getElementById("mediumBtn").style.color      = (mode === "medium") ? "#000" : "#0ff";
+      document.getElementById("hardBtn").style.background   = (mode === "hard")   ? "#0ff" : "transparent";
+      document.getElementById("hardBtn").style.color        = (mode === "hard")   ? "#000" : "#0ff";
     }
-
     function randomRun() {
       return runChoices[Math.floor(Math.random() * runChoices.length)];
     }
-
     function disableClickTemporarily() {
       canClick = false;
       setTimeout(() => { canClick = true; }, 250);
     }
-
     function showPage(pageId) {
       document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
       });
       document.getElementById(pageId).classList.add('active');
     }
-
     function restartGame() {
       playerScore      = 0;
       computerScore    = 0;
@@ -553,17 +482,12 @@
       aiNextMilestone   = 50;
       userMoveHistory   = [];
       tossDecided       = false;
-      didUserWinToss    = false; // Reset
-
+      didUserWinToss    = false;
       document.getElementById("playerScoreDisplay").textContent   = "0";
       document.getElementById("computerScoreDisplay").textContent = "0";
       document.getElementById("tossMessage").textContent          = "";
       document.getElementById("tossContinueBtn").style.display    = "none";
       document.getElementById("confettiEffect").style.display     = "none";
-
-      // If you want to reset difficulty each time, set difficulty = ""
-      // For now, let's keep it so user can replay same mode.
-
       showPage("introPage");
     }
 
@@ -571,16 +495,22 @@
       INTRO PAGE
     */
     function startGame() {
-      const nameInput = document.getElementById("playerNameInput");
-      if (nameInput.value.trim() === "") {
-        showCustomPopup("Please enter your name!");
-        return;
+      const storedName = localStorage.getItem("handCricketUsername");
+      if (!storedName) {
+        const nameInput = document.getElementById("playerNameInput");
+        if (nameInput.value.trim() === "") {
+          showCustomPopup("Please enter your name!");
+          return;
+        }
+        localStorage.setItem("handCricketUsername", nameInput.value.trim());
+        playerName = nameInput.value.trim();
+      } else {
+        playerName = storedName;
       }
       if (difficulty === "") {
         showCustomPopup("Please select a mode!");
         return;
       }
-      playerName = nameInput.value.trim();
       document.getElementById("playerNameScore").textContent = `${playerName}'s Score:`;
       showPage("tossPage");
     }
@@ -591,43 +521,31 @@
     function selectToss(userChoice) {
       if (tossDecided) return;
       tossDecided = true;
-
       const correctToss = tossChoices[Math.floor(Math.random() * tossChoices.length)];
       if (userChoice === correctToss) {
-        // User won toss
         didUserWinToss = true;
-        document.getElementById("tossMessage").textContent =
-          `Congrats, ${playerName}! You won the toss.`;
+        document.getElementById("tossMessage").textContent = `Congrats, ${playerName}! You won the toss.`;
         document.getElementById("tossContinueBtn").style.display = "inline-block";
       } else {
-        // User lost toss
         didUserWinToss = false;
         const aiChoice = batBowlChoices[Math.floor(Math.random() * batBowlChoices.length)];
-        document.getElementById("tossMessage").textContent =
-          `Oops, ${playerName}! You lost the toss. The AI chose to ${aiChoice} first.`;
+        document.getElementById("tossMessage").textContent = `Oops, ${playerName}! You lost the toss. The AI chose to ${aiChoice} first.`;
         document.getElementById("tossContinueBtn").style.display = "inline-block";
-
         if (aiChoice === "bowl") {
-          gameMode       = "userBatFirst";
+          gameMode = "userBatFirst";
           currentBatting = "user";
         } else {
-          gameMode       = "userBowlFirst";
+          gameMode = "userBowlFirst";
           currentBatting = "computer";
         }
       }
     }
-
     function proceedAfterToss() {
       if (didUserWinToss) {
-        // Show choose bat/bowl page
         showPage("chooseBatBowlPage");
       } else {
-        // AI decided
-        if (gameMode === "userBatFirst") {
-          showBattingPage();
-        } else {
-          showBowlingPage();
-        }
+        if (gameMode === "userBatFirst") showBattingPage();
+        else showBowlingPage();
       }
     }
 
@@ -650,12 +568,17 @@
       BATTING PAGE
     */
     function showBattingPage() {
-      document.getElementById("battingTitle").textContent =
-        (innings === 1)
-          ? `${playerName}, you're Batting First!`
-          : `${playerName}, chase the target!`;
+      let titleText;
+      if (innings === 1) {
+        titleText = `${playerName}, you're Batting First!`;
+      } else {
+        // second innings user batting => chase
+        let needed = target - playerScore + 1;
+        titleText = `${playerName}, chase the target! (Target: ${target}, You need: ${needed})`;
+      }
+      document.getElementById("battingTitle").innerHTML = titleText;
       document.getElementById("playerScoreDisplay").textContent = playerScore;
-      document.getElementById("battingStatus").textContent      = "Select a run (1–10):";
+      document.getElementById("battingStatus").textContent = "Select a run (1–10):";
       generateRunButtons("battingButtons", handleBatting);
       showPage("battingPage");
     }
@@ -664,12 +587,17 @@
       BOWLING PAGE
     */
     function showBowlingPage() {
-      document.getElementById("bowlingTitle").textContent =
-        (innings === 1)
-          ? `${playerName}, you're Bowling First!`
-          : `${playerName}, defend the target!`;
+      let titleText;
+      if (innings === 1) {
+        titleText = `${playerName}, you're Bowling First!`;
+      } else {
+        // second innings AI batting => defend
+        let needed = target - computerScore + 1;
+        titleText = `${playerName}, defend the target! (Target: ${target}, AI needs: ${needed})`;
+      }
+      document.getElementById("bowlingTitle").innerHTML = titleText;
       document.getElementById("computerScoreDisplay").textContent = computerScore;
-      document.getElementById("bowlingStatus").textContent        = "Select a run (1–10):";
+      document.getElementById("bowlingStatus").textContent = "Select a run (1–10):";
       generateRunButtons("bowlingButtons", handleBowling);
       showPage("bowlingPage");
     }
@@ -690,30 +618,31 @@
 
     /*
       BATTING HANDLER
+      -> no time-limit revert, no accumulation, no delay on out
     */
     function handleBatting(userRun) {
       if (!canClick) return;
       disableClickTemporarily();
-
       let compRun;
       if (difficulty === "hard") {
         userMoveHistory.push(userRun);
-        compRun = getSmartAIMove();
+        compRun = getHardAIMove();
+      } else if (difficulty === "medium") {
+        userMoveHistory.push(userRun);
+        compRun = getMediumAIMove();
       } else {
         compRun = randomRun();
       }
-
-      document.getElementById("battingStatus").textContent =
-        `${playerName} chose ${userRun}, AI shows ${compRun}.`;
+      let response = `${playerName} chose ${userRun}, AI shows ${compRun}.`;
+      document.getElementById("battingStatus").textContent = response;
 
       if (userRun === compRun) {
-        setTimeout(() => { endInnings("batting"); }, 500);
+        endInnings("batting");
       } else {
         playerScore += userRun;
         document.getElementById("playerScoreDisplay").textContent = playerScore;
-
         if (innings === 2 && playerScore > target) {
-          setTimeout(() => { showResult("win"); }, 500);
+          showResult("win");
           return;
         }
         if (playerScore >= userNextMilestone) {
@@ -726,29 +655,29 @@
 
     /*
       BOWLING HANDLER
+      -> no time-limit revert, no accumulation, no delay on out
     */
     function handleBowling(userRun) {
       if (!canClick) return;
       disableClickTemporarily();
-
       let compRun;
       if (difficulty === "hard") {
-        compRun = getSmartAIMoveWhenBatting();
+        compRun = getHardAIMoveWhenBatting();
+      } else if (difficulty === "medium") {
+        compRun = getMediumAIMoveWhenBatting();
       } else {
         compRun = randomRun();
       }
-
-      document.getElementById("bowlingStatus").textContent =
-        `${playerName} chose ${userRun}, AI shows ${compRun}.`;
+      let response = `${playerName} chose ${userRun}, AI shows ${compRun}.`;
+      document.getElementById("bowlingStatus").textContent = response;
 
       if (userRun === compRun) {
-        setTimeout(() => { endInnings("bowling"); }, 500);
+        endInnings("bowling");
       } else {
         computerScore += compRun;
         document.getElementById("computerScoreDisplay").textContent = computerScore;
-
         if (innings === 2 && computerScore > target) {
-          setTimeout(() => { showResult("loss"); }, 500);
+          showResult("loss");
           return;
         }
         if (computerScore >= aiNextMilestone) {
@@ -760,30 +689,57 @@
     }
 
     /*
-      SMART AI FOR HARD MODE
+      HARD MODE AI (10% predicted, 90% random)
     */
-    function getSmartAIMove() {
+    function getHardAIMove() {
       if (userMoveHistory.length === 0) return randomRun();
       let freq = {};
-      userMoveHistory.forEach(m => {
-        freq[m] = (freq[m] || 0) + 1;
-      });
-      let predicted = Object.keys(freq).reduce((a, b) => freq[a] > freq[b] ? a : b);
+      userMoveHistory.forEach(m => { freq[m] = (freq[m] || 0) + 1; });
+      let predicted = Object.keys(freq).reduce((a,b) => freq[a] > freq[b] ? a : b);
       predicted = parseInt(predicted);
-      return (Math.random() < 0.8) ? predicted : randomRun();
+      // 10% chance to pick predicted
+      return (Math.random() < 0.1) ? predicted : randomRun();
     }
-    function getSmartAIMoveWhenBatting() {
+    function getHardAIMoveWhenBatting() {
       if (userMoveHistory.length === 0) return randomRun();
       let freq = {};
-      userMoveHistory.forEach(m => {
-        freq[m] = (freq[m] || 0) + 1;
-      });
-      let predicted = Object.keys(freq).reduce((a, b) => freq[a] > freq[b] ? a : b);
+      userMoveHistory.forEach(m => { freq[m] = (freq[m] || 0) + 1; });
+      let predicted = Object.keys(freq).reduce((a,b) => freq[a] > freq[b] ? a : b);
       predicted = parseInt(predicted);
       let choices = runChoices.filter(x => x !== predicted);
-      return (Math.random() < 0.8 && choices.length > 0)
-        ? choices[Math.floor(Math.random() * choices.length)]
-        : randomRun();
+      // 10% chance to avoid predicted
+      if (Math.random() < 0.1 && choices.length > 0) {
+        return choices[Math.floor(Math.random() * choices.length)];
+      } else {
+        return randomRun();
+      }
+    }
+
+    /*
+      MEDIUM MODE AI (5% predicted, 95% random)
+    */
+    function getMediumAIMove() {
+      if (userMoveHistory.length === 0) return randomRun();
+      let freq = {};
+      userMoveHistory.forEach(m => { freq[m] = (freq[m] || 0) + 1; });
+      let predicted = Object.keys(freq).reduce((a,b) => freq[a] > freq[b] ? a : b);
+      predicted = parseInt(predicted);
+      // 5% chance to pick predicted
+      return (Math.random() < 0.05) ? predicted : randomRun();
+    }
+    function getMediumAIMoveWhenBatting() {
+      if (userMoveHistory.length === 0) return randomRun();
+      let freq = {};
+      userMoveHistory.forEach(m => { freq[m] = (freq[m] || 0) + 1; });
+      let predicted = Object.keys(freq).reduce((a,b) => freq[a] > freq[b] ? a : b);
+      predicted = parseInt(predicted);
+      let choices = runChoices.filter(x => x !== predicted);
+      // 5% chance to avoid predicted
+      if (Math.random() < 0.05 && choices.length > 0) {
+        return choices[Math.floor(Math.random() * choices.length)];
+      } else {
+        return randomRun();
+      }
     }
 
     /*
@@ -817,10 +773,6 @@
         }
       }
     }
-
-    /*
-      INNINGS OVER PAGE
-    */
     function showInningsOverPage() {
       const msg = (gameMode === "userBatFirst" && currentBatting === "user")
         ? `${playerName}, you got out on ${playerScore}.`
@@ -829,11 +781,9 @@
         : (gameMode === "userBatFirst" && currentBatting === "computer")
         ? `AI finished batting with ${computerScore}.`
         : `You finished batting with ${playerScore}.`;
-
       const needed = (currentBatting === "user")
         ? `The AI now needs more than ${playerScore} to win!`
         : `You now need more than ${computerScore} to win!`;
-
       document.getElementById("inningsOverMessage").textContent = `${msg} ${needed}`;
       showPage("inningsOverPage");
       innings = 2;
@@ -849,14 +799,13 @@
     }
 
     /*
-      RESULT PAGE -> STATS PAGE
+      RESULT PAGE
     */
     function showResult(result) {
       showPage("resultPage");
       const titleEl   = document.getElementById("resultTitle");
       const messageEl = document.getElementById("resultMessage");
       const confetti  = document.getElementById("confettiEffect");
-
       if (result === "win") {
         titleEl.textContent = "VICTORY!";
         titleEl.classList.add("win-animation");
@@ -884,21 +833,145 @@
           messageEl.textContent = `AI posted ${computerScore}, and you couldn't defend. Better luck next time!`;
         }
       }
-
       updateStats(result);
-      setTimeout(() => { showStatsPage(); }, 2000);
     }
-
-    /*
-      ON LOAD, TRY LOCK ORIENTATION
-    */
-    window.addEventListener("load", function() {
-      if (screen.orientation && screen.orientation.lock) {
-        screen.orientation.lock("portrait").catch(err => console.log(err));
-      }
-      // Show rules popup on initial load
-      document.getElementById("rulesPopup").style.display = "flex";
-    });
   </script>
+</head>
+<body>
+  <!-- RULES POPUP -->
+  <div id="rulesPopup">
+    <div class="popup-container">
+      <h2 class="flicker">Game Rules</h2>
+      <p>Please follow these rules:</p>
+      <ul style="text-align: left; margin: 10px auto; max-width: 300px;">
+        <li>No spamming the buttons.</li>
+        <li>Keep it fair and fun.</li>
+        <li>Clearing your browser cache will erase your saved data.</li>
+        <li>Enjoy the game!</li>
+      </ul>
+      <p><strong>Enjoy!</strong></p>
+      <button onclick="closeRulesPopup()">Play Hand Cricket</button>
+    </div>
+  </div>
+
+  <!-- CUSTOM POPUP FOR ALERT MESSAGES -->
+  <div id="messagePopup">
+    <div class="popup-container">
+      <h2 class="flicker">Attention!</h2>
+      <p id="messagePopupText"></p>
+      <button onclick="closeCustomPopup()">OK</button>
+    </div>
+  </div>
+
+  <!-- GLITCH HEADING -->
+  <h1 class="glitch" data-text="Hand Cricket V2">Hand Cricket V2</h1>
+
+  <!-- INTRO PAGE -->
+  <div id="introPage" class="page active">
+    <div class="container">
+      <h2 class="flicker">Hand Cricket</h2>
+      <div id="usernameContainer">
+        <p>Please enter your name (max 14 characters):</p>
+        <input type="text" id="playerNameInput" placeholder="Your Name" maxlength="14">
+      </div>
+      <p class="mode-label">Select Mode:</p>
+      <div class="mode-buttons">
+        <button id="easyBtn" onclick="setDifficulty('easy')">Easy</button>
+        <button id="mediumBtn" onclick="setDifficulty('medium')">Medium</button>
+        <button id="hardBtn" onclick="setDifficulty('hard')">Hard</button>
+      </div>
+      <div class="view-your">
+        <p>View your:</p>
+        <button onclick="showStatsPage()">Stats</button>
+      </div>
+      <div class="extra-buttons">
+        <button onclick="startGame()">Play Hand Cricket</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOSS PAGE -->
+  <div id="tossPage" class="page">
+    <div class="container">
+      <h2 class="flicker">Toss Time!</h2>
+      <p>Choose Heads or Tails:</p>
+      <button onclick="selectToss('heads')">Heads</button>
+      <button onclick="selectToss('tails')">Tails</button>
+      <p id="tossMessage"></p>
+      <button id="tossContinueBtn" style="display:none;" onclick="proceedAfterToss()">Continue</button>
+    </div>
+  </div>
+
+  <!-- CHOOSE BAT/BOWL PAGE -->
+  <div id="chooseBatBowlPage" class="page">
+    <div class="container">
+      <h2 class="flicker">You won the toss!</h2>
+      <p>Choose your play:</p>
+      <button onclick="selectBatBowl('bat')">Bat</button>
+      <button onclick="selectBatBowl('bowl')">Bowl</button>
+    </div>
+  </div>
+
+  <!-- BATTING PAGE -->
+  <div id="battingPage" class="page">
+    <div class="container">
+      <h2 class="flicker" id="battingTitle"></h2>
+      <p class="score-display">
+        <span id="playerNameScore">Player's Score:</span>
+        <span id="playerScoreDisplay">0</span>
+      </p>
+      <p id="battingStatus">Select a run (1–10):</p>
+      <div class="run-buttons" id="battingButtons"></div>
+    </div>
+  </div>
+
+  <!-- BOWLING PAGE -->
+  <div id="bowlingPage" class="page">
+    <div class="container">
+      <h2 class="flicker" id="bowlingTitle"></h2>
+      <p class="score-display">AI Score: <span id="computerScoreDisplay">0</span></p>
+      <p id="bowlingStatus">Select a run (1–10):</p>
+      <div class="run-buttons" id="bowlingButtons"></div>
+    </div>
+  </div>
+
+  <!-- MILESTONE PAGE -->
+  <div id="milestonePage" class="page">
+    <div class="container">
+      <h2 class="milestone-title" id="milestoneTitle"></h2>
+      <p id="milestoneMessage">Milestone reached!</p>
+    </div>
+  </div>
+
+  <!-- INNINGS OVER PAGE -->
+  <div id="inningsOverPage" class="page">
+    <div class="container">
+      <h2 class="flicker">Innings Over!</h2>
+      <p id="inningsOverMessage"></p>
+      <button onclick="startNextInnings()">Next Innings</button>
+    </div>
+  </div>
+
+  <!-- RESULT PAGE -->
+  <div id="resultPage" class="page">
+    <div class="container">
+      <h2 id="resultTitle"></h2>
+      <p id="resultMessage"></p>
+      <div class="result-buttons" style="margin-top:20px;">
+        <button onclick="restartGame()">Play again</button>
+        <button onclick="showStatsPage()">View stats</button>
+      </div>
+    </div>
+    <div class="confetti" id="confettiEffect" style="display:none;"></div>
+  </div>
+
+  <!-- STATS PAGE -->
+  <div id="statsPage" class="page">
+    <div class="container">
+      <h2 class="flicker">Singleplayer Stats</h2>
+      <p id="statsDisplay"></p>
+      <button onclick="restartGame()">Play Hand Cricket</button>
+    </div>
+  </div>
 </body>
 </html>
